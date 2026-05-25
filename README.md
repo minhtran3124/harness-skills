@@ -20,7 +20,7 @@ steps allowed.
 One-liner that clones the harness, copies it in, and builds `.claude/`:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/minhtran3124/claude-skills/v4-harness-experimental/scripts/install-harness.sh?$(date +%s)" | bash -s -- --yes
+curl -fsSL "https://raw.githubusercontent.com/minhtran3124/harness-skills/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --yes
 ```
 
 Needs `git` + [jq](https://jqlang.github.io/jq/). Existing harness files are backed up first.

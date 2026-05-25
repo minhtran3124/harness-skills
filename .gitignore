@@ -1,0 +1,41 @@
+# MkDocs build output
+site/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ruff_cache/
+.pytest_cache/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+
+# visual-planner local-only render output (auto-generated beside PLAN.md)
+specs/**/PLAN.html
+specs/**/.plan-review.json
+
+# Claude Code (user-specific, not shared config)
+settings.local.json
+
+# Claude Code local clone (derived from root via scripts/deploy-harness.sh)
+.claude/
+
+# Timestamped harness backups (created by deploy/install scripts; not tracked)
+.harness-backup-*/
+
+# Local-only research notes (kept out of the tracked tree by request)
+docs/memory/
+# Added by code-review-graph
+.code-review-graph/
+
+# Specifications
+specs/
+
+# MCP server configuration
+.mcp.json
+.vercel

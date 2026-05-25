@@ -1,0 +1,102 @@
+# Auto-Correction Scope
+
+Classifies what Claude may self-fix during implementation vs what requires user confirmation. Reduces HITL while keeping trust.
+
+Applies when executing a `specs/<slug>/PLAN.md` task. For ad-hoc single fixes, user judgment rules.
+
+Related: `plan-format.md`, `guidelines.md`, `orchestration.md`, `skills/feature-intake/SKILL.md`.
+
+## Lane-aware autonomy
+
+The intake lane (`specs/<slug>/SUMMARY.md`, set by `/feature-intake`) decides how much
+autonomy applies. Rules 1–4 below are constant; the lane decides whether a plan and a human
+confirmation are required first:
+
+| Lane | Autonomy | Plan | Human confirm |
+|---|---|---|---|
+| **tiny** | Full auto — direct patch | none | none (machine gates are the safety net: `ruff-on-edit`, `auto-test-on-change`, `commit-quality-gate`, `risk-corroboration`) |
+| **normal** | Auto with proof gates (subagent two-stage review) | yes | only if confidence low / ambiguous |
+| **high-risk** | Auto-plan, gated-execute | yes (full chain) | only on ambiguity or a hard gate (Rule 4) |
+
+Rule 4 (STOP) still fires inside **every** lane — a hard gate discovered mid-task escalates
+regardless of how the work was classified. Ceremony scales with risk; the human gate scales
+with ambiguity, not risk.
+
+**Record always-on; verify substitutes for the human gate.** Every lane writes `SUMMARY.md`
+(the audit record, incl. `Rationale` / `Alternatives`). For autonomous work, a re-runnable
+`### Verify` row + independent review — not extra planning docs — are what earn the skipped
+human confirmation. Plan-ahead docs (`design` / `research-brief` / `PLAN`) scale by signal
+(`rules/orchestration.md` → Artifact policy); `FULL_ARTIFACTS=1` forces the full set when
+maximum traceability is wanted.
+
+## Rule 1 — Auto-fix (no ask)
+
+Obvious bugs discovered during implementation:
+
+- Wrong SQLAlchemy query (missing join, incorrect filter, soft-delete not respected)
+- Off-by-one, null-check miss, wrong comparison operator
+- Logic contradicting the `<action>` spec
+- Test failures caused by the implementation mistake (not test design)
+- Missing `await` on async call; sync call in async context
+- Typos in identifiers
+
+## Rule 2 — Auto-add (no ask)
+
+Missing functionality clearly required by project standards but not explicitly listed in `<action>`:
+
+- Input validation at API boundary (Pydantic schema, guard clauses)
+- Error handling for documented failure modes (DB errors, broker HTTP 4xx/5xx)
+- Missing imports, type hints, Pydantic fields
+- `AppException.BadRequest / .NotFound / .ServerError` where bare `HTTPException` was used
+- Token logging via `AIUsageService.log_and_increment()` for AI paths (including `success=False` on failure)
+- `logger.error(f"[COMPONENT] ...: {e}")` where exceptions swallowed silently
+
+## Rule 3 — Auto-fix blocking
+
+Issues preventing the task from completing:
+
+- Missing dependency (add to `requirements.txt` / `requirements-test.txt`, note rationale in SUMMARY)
+- Syntax error in Claude's own output
+- Wrong import path
+- Alembic revision ID collision (regenerate)
+- Linting failures (`ruff`, `mypy`) on newly-written code
+
+## Rule 4 — STOP + ask user
+
+Changes requiring architectural judgment — NEVER auto-apply:
+
+- Schema changes (add/remove/rename DB table or column) not in the `<action>` spec
+- API contract changes (route path, method, request/response shape) not in spec
+- Removing existing functionality, even if seemingly unused
+- Introducing a new external service dependency (new broker, AI provider, webhook target)
+- Security-sensitive auth/authz changes (permission checks, JWT handling, CORS)
+- Session scope changes (`get_db` ↔ `sessionmanager.session()`)
+- Changes to high-blast-radius files: `settings.json` (hook registration), any `hooks/*` script (auto-runs every session), or a core skill engine (e.g. `skills/visual-planner/render_plan.py`)
+- Replacing a service/pattern (e.g. swapping cache impl, replacing `BaseRepository` usage)
+
+## Reporting
+
+Every Rule 1–3 auto-fix MUST appear in `specs/<slug>/SUMMARY.md` under `### Deviations`:
+
+```markdown
+### Deviations
+
+- Rule 2 — Added `AppException.BadRequest` for invalid trade_type. `app/services/trade_log_service.py`. Commit `abc1234`.
+- Rule 3 — Added `httpx>=0.27` to requirements.txt. Needed by new broker client. Commit `def5678`.
+```
+
+If a deviation keeps re-appearing across tasks, surface it as a PLAN.md gap — original spec was incomplete.
+
+## Rollback (high-risk / Rule-4 actions)
+
+Any high-risk-lane work or Rule-4 action that proceeds (after the human narrows scope, or in
+a loosened category) MUST record the exact undo command(s) in `specs/<slug>/SUMMARY.md` under
+`### Rollback` before the work is considered done. Reversibility is a precondition for
+autonomy — an action you cannot cleanly undo is not eligible for the autonomous path.
+
+```markdown
+### Rollback
+
+- Revert migration: `alembic downgrade -1`
+- Revert code: `git revert <sha>`
+```

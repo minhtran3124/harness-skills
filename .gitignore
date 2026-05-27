@@ -15,10 +15,6 @@ node_modules/
 # OS
 .DS_Store
 
-# visual-planner local-only render output (auto-generated beside PLAN.md)
-specs/**/PLAN.html
-specs/**/.plan-review.json
-
 # Claude Code (user-specific, not shared config)
 settings.local.json
 
@@ -33,7 +29,7 @@ docs/memory/
 # Added by code-review-graph
 .code-review-graph/
 
-# Specifications
+# Specifications — fully local-only (PLAN.md, PLAN.html, design.md, research-brief.md, sidecars)
 specs/
 
 # MCP server configuration

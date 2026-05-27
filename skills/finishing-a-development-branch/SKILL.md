@@ -93,7 +93,7 @@ Which option?
 
 #### Option 1: Push
 
-1. **Mark the plan shipped** — run Step 5. If a plan matches this branch, stage and commit it: `git add specs/<slug>/PLAN.md && git commit -m "chore(specs): mark <slug> plan shipped"`. If no plan matches, skip silently.
+1. **Mark the plan shipped** — run Step 5. This updates `specs/<slug>/PLAN.md` locally only (`specs/` is gitignored — nothing to stage or commit). If no plan matches, skip silently.
 2. Push to remote: `git push -u github <current_branch>`.
 3. Confirm: "Pushed to `<current_branch>`. Done."
 
@@ -119,7 +119,7 @@ Which option?
 
 Runs as the first action of Option 1 (and therefore Option 2, which executes Option 1). **Skip for Option 3** (keep as-is) and **Option 4** (discard) — that work is not shipped.
 
-> Why this step exists: `status:` in `specs/<slug>/PLAN.md` records the plan lifecycle (`proposed` → `active` at execution start → `shipped` here). This is the **`shipped`** transition — the signal a later reviewer reads to know the feature landed. The edit auto-re-renders `PLAN.html` via `render-plan-on-write.sh`. Leaving it stale on ship is the root cause of status drift across `specs/`.
+> Why this step exists: `status:` in `specs/<slug>/PLAN.md` records the plan lifecycle (`proposed` → `active` at execution start → `shipped` here). This is the **`shipped`** transition — a **local-only** signal (since `specs/` is gitignored) that you/anyone resuming the worktree can read to know the feature landed. The edit auto-re-renders `PLAN.html` via `render-plan-on-write.sh`. Leaving it stale on ship is the root cause of status drift across `specs/`.
 
 #### 5a. Resolve the plan for this branch
 
@@ -144,7 +144,7 @@ In the resolved `PLAN.md`:
    - YYYY-MM-DD — shipped via `<branch>` (PR #NNN for Option 2)
    ```
 
-This edit is committed in Option 1 step 1 (so it ships with the push / lands in the PR).
+This edit stays local — `specs/` is gitignored, so the status update is not pushed and does not land in the PR. It only persists in whatever worktree/clone holds the plan.
 
 ## Quick Reference
 
@@ -171,7 +171,7 @@ This edit is committed in Option 1 step 1 (so it ships with the push / lands in 
 - Ask for confirmation before any destructive action
 - Show the PR URL after creation
 - Default to `main` as base branch when not specified
-- Set the matching plan's `status: shipped` before pushing (Options 1 & 2), using only canonical status values
+- Set the matching plan's `status: shipped` locally (Options 1 & 2), using only canonical status values (`specs/` is gitignored; this is a local record, not a commit)
 
 ## Integration
 

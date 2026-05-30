@@ -17,26 +17,28 @@ steps allowed.
 
 ### Add to an existing project
 
-One-liner that clones the harness, copies it in, and builds `.claude/`:
+One-liner that clones the harness, builds `.claude/`, and leaves your project root clean:
 
 ```bash
 curl -fsSL "https://raw.githubusercontent.com/minhtran3124/harness-skills/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --yes
 ```
 
-Needs `git` + [jq](https://jqlang.github.io/jq/). Existing harness files are backed up first.
-Flags: `--directory <path>` · `--branch <name>` · `--source <local checkout>` · `--dry-run`.
+Everything the harness needs lives entirely in a gitignored `.claude/` (skills, agents, hooks, rules, templates, settings) — nothing is dropped at your project root. **To update, just re-run the one-liner** (idempotent; existing files are backed up first).
+
+Needs `git` + [jq](https://jqlang.github.io/jq/).
+Flags: `--directory <path>` · `--branch <name>` · `--source <local checkout>` · `--keep-sources` · `--dry-run`.
+
+Then **restart Claude Code** so it loads the skills, agents, and hooks.
 
 ### Develop on this repo
 
-The root dirs are the source of truth and Claude Code loads from a derived, gitignored `.claude/`. Rebuild it with:
+Working *on the harness itself* keeps the editable source at the repo root and Claude Code loads from a derived, gitignored `.claude/`. Rebuild it with:
 
 ```bash
 bash scripts/deploy-harness.sh
 ```
 
-First run installs; any later run updates (idempotent). Re-run after editing anything under `skills/` `agents/` `hooks/` `rules/` `settings.json`.
-
-Then **restart Claude Code** so it loads the skills, agents, and hooks.
+First run installs; any later run updates (idempotent). Re-run after editing anything under `skills/` `agents/` `hooks/` `rules/` `templates/` `settings.json`. (Installing into another project with `--keep-sources` reproduces this same root-source + `.claude/` layout there.)
 
 ### MCP servers
 

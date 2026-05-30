@@ -64,7 +64,8 @@ printf "  ${MODE_EMOJI}  ${B}%s${R}\n\n" "$MODE_LABEL"
 
 # ---------- pipeline ----------
 step "Preparing ${B}.claude/${R}"            prep_dir
-for d in skills agents hooks rules; do
+for d in skills agents hooks rules templates; do
+  [ -e "$d" ] || continue
   step "Syncing ${B}$d/${R}"                 copy_dir "$d"
 done
 step "Stripping archived skills"             strip_archive

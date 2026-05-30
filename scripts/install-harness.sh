@@ -17,6 +17,7 @@ SOURCE_DIR=""
 ASSUME_YES=0
 FORCE=0
 DRY_RUN=0
+KEEP_SOURCES=0
 
 # What gets installed into the target (source-of-truth layout; deploy-harness.sh derives .claude/).
 PAYLOAD=(skills agents hooks rules templates settings.json scripts/deploy-harness.sh)
@@ -44,6 +45,8 @@ Options:
       --source <path>     Use a local claude-skills checkout instead of cloning
   -y, --yes               Non-interactive: back up + overwrite existing harness files
       --force             Overwrite without prompting (after backup)
+      --keep-sources      Keep the source-of-truth dirs at the project root
+                          (default: remove them after .claude/ is built)
       --dry-run           Show what would happen; write nothing
   -h, --help              Show this help
 
@@ -62,6 +65,7 @@ while [ $# -gt 0 ]; do
     --source)       SOURCE_DIR="${2:?--source needs a path}"; shift 2 ;;
     -y|--yes)       ASSUME_YES=1; shift ;;
     --force)        FORCE=1; ASSUME_YES=1; shift ;;
+    --keep-sources) KEEP_SOURCES=1; shift ;;
     --dry-run)      DRY_RUN=1; shift ;;
     -h|--help)      usage; exit 0 ;;
     *)              fail "Unknown option: $1  (see --help)" ;;
@@ -147,6 +151,23 @@ if [ "$DRY_RUN" -eq 1 ]; then
 else
   printf '\n'
   ( cd "$TARGET_DIR" && bash scripts/deploy-harness.sh )
+fi
+
+# ---------- prune root sources (everything now lives in .claude/) ----------
+# deploy-harness.sh built a self-contained .claude/; the source-of-truth copies at the
+# project root are just clutter for a consuming project. Remove them unless --keep-sources.
+if [ "$KEEP_SOURCES" -eq 1 ]; then
+  info "Keeping source-of-truth dirs at root (${D}--keep-sources${R})"
+elif [ "$DRY_RUN" -eq 1 ]; then
+  info "Would prune root sources after build: ${PAYLOAD[*]} (keep only .claude/)"
+else
+  pruned=0
+  for item in "${PAYLOAD[@]}"; do
+    [ -e "$TARGET_DIR/$item" ] && { rm -rf "$TARGET_DIR/$item"; pruned=$((pruned+1)); }
+  done
+  # drop scripts/ if our removed deploy-harness.sh left it empty
+  rmdir "$TARGET_DIR/scripts" 2>/dev/null || true
+  ok "Pruned $pruned root source item(s) — harness lives in ${B}.claude/${R}"
 fi
 
 printf '\n  %s%s✓ Harness installed%s  %s→ %s%s\n' "$G" "$B" "$R" "$D" "$TARGET_DIR" "$R"

@@ -42,7 +42,18 @@ trap 'printf "\r  '"$([ -t 1 ] && printf '\033[31m')"'✗'"$([ -t 1 ] && printf 
 
 # ---------- work units ----------
 prep_dir()        { mkdir -p .claude; }
-copy_dir()        { rm -rf ".claude/$1"; cp -R "$1" ".claude/$1"; }
+# Merge-sync source dir $1 into .claude/$1. Only entries the harness ships are
+# removed + recopied; foreign entries already in .claude/$1 (e.g. skills the user
+# installed separately) are left untouched. A wholesale `rm -rf .claude/$1` would
+# delete those non-harness entries — this is deliberately per-entry instead.
+copy_dir()        {
+  mkdir -p ".claude/$1"
+  for entry in "$1"/* "$1"/.[!.]*; do
+    [ -e "$entry" ] || continue
+    rm -rf ".claude/$1/$(basename "$entry")"
+    cp -R "$entry" ".claude/$1/"
+  done
+}
 strip_archive()   { rm -rf .claude/skills/_archive; }   # archived skills must not register as live
 derive_settings() {
   # Point relative hook commands at the deployed .claude/ copies via $CLAUDE_PROJECT_DIR so they

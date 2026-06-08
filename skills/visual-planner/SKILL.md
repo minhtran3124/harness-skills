@@ -1,6 +1,6 @@
 ---
 name: visual-planner
-description: Render specs/<slug>/PLAN.md to a modern, self-contained HTML page for visual review. Optional --review mode overlays graph-derived blast-radius and risk.
+description: Use after a PLAN.md is written, when you want to review it visually before execution (auto-invoked by /writing-plans; also standalone as /visual-planner <slug>). Renders specs/<slug>/PLAN.md to a self-contained HTML page; optional --review mode overlays graph-derived blast-radius and risk.
 allowed-tools: Bash, Read, Glob, Write, mcp__code-review-graph__list_graph_stats_tool, mcp__code-review-graph__query_graph_tool, mcp__code-review-graph__get_impact_radius_tool, mcp__code-review-graph__get_affected_flows_tool
 ---
 

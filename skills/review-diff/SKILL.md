@@ -1,6 +1,6 @@
 ---
 name: review-diff
-description: Generate a Markdown review file with C4 architecture diagrams and code walkthrough for the current git changes
+description: Use when you want to visualize what changed before review or PR — generates a Markdown review file with C4 architecture diagrams and a code walkthrough of the current git diff. Not a correctness review; for bug-hunting use /code-review.
 allowed-tools: Bash(git *), Bash(mkdir *), Read, Glob, Grep, Write, Edit
 ---
 

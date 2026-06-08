@@ -35,3 +35,7 @@ specs/
 # MCP server configuration
 .mcp.json
 .vercel
+
+# Local-only harness-engineering review docs
+docs/harness-engineering-review.md
+docs/harness-engineering-review.en.md

@@ -111,6 +111,18 @@ Task tool (general-purpose):
 
     Report ONLY runtime-correctness defects this change introduces or exposes.
 
+    ## Confidence scoring (next stage)
+
+    The findings you emit here are **candidates** — high-recall output by design. A
+    separate cheap-model scorer (`./correctness-scorer-prompt.md`) will rate each one
+    0–100 independently of your reasoning. Only findings that score **≥80** proceed to
+    the fix-loop; lower-scored findings are recorded as `advisory` and do not block.
+
+    **Therefore: stay high-recall. Do NOT self-censor or pre-filter uncertain findings.**
+    If something might be a bug, FLAG IT. Precision is enforced downstream by the scorer,
+    not here. Dropping a real P0 at this stage because you were unsure is the failure mode
+    this pipeline is designed to prevent.
+
     ## Report format
 
     Severity drives urgency; Rule class drives who acts and how. Both axes are required

@@ -39,9 +39,9 @@ This file is the single source of truth. Per-skill `README.md` files have been r
       ↓
 /subagent-driven-development        ← same session
   OR /executing-plans               ← parallel session
-  OR /incremental-implementation    ← step-by-step with user checkpoints
   → implements plan task-by-task
   → two-stage review per task (spec compliance → code quality)
+  → final adversarial correctness review over the whole diff before shipping
       ↓
 /compound  (if non-obvious pattern found)
   → output: docs/solutions/<category>/<slug>.md
@@ -107,9 +107,8 @@ fix (implement directly or via /subagent-driven-development)
 | Skill | Trigger | Output |
 |---|---|---|
 | `/using-git-worktrees` | Before starting feature work needing isolation | Isolated worktree + branch |
-| `/subagent-driven-development` | Executing a plan in the current session (fresh subagent per task) | Implemented tasks, two-stage reviewed |
+| `/subagent-driven-development` | Executing a plan in the current session (fresh subagent per task) | Implemented tasks, two-stage reviewed per task + final adversarial correctness review |
 | `/executing-plans` | Executing a plan in a separate parallel session (checkpoint-based) | Same as above |
-| `/incremental-implementation` | Step-by-step guided implementation with user checkpoints (prevents vibe-coding) | Implemented chunks, user-verified at each step |
 
 ### Review & Shipping
 
@@ -166,7 +165,6 @@ If one of these isn't available in your environment, the workflows degrade grace
                                 OR /executing-plans (parallel session)
 /visual-planner             ──► PLAN.html (terminal — visual artifact; back to writing-plans handoff)
 /subagent-driven-development ──► /compound → /finishing-a-development-branch
-/incremental-implementation  ──► /compound → /finishing-a-development-branch
 /systematic-debugging       ──► fix → /compound
 /compound                   ──► nothing (terminal — crystallization is end state)
 /finishing-a-development-branch ──► nothing (terminal — shipped)

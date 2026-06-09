@@ -176,13 +176,29 @@ gracefully: if `docs/solutions/` is absent or empty, skip this step and proceed.
 - **Different model.** Dispatch with a different (ideally most capable) model than the
   implementer for ensemble diversity.
 
-**Two-axis finding classification.** Every finding the reviewer emits carries two labels:
+**Pipeline order.** The correctness stage runs in five steps — FIND → SCORE → THRESHOLD → D → E:
+
+1. **FIND** (`./correctness-reviewer-prompt.md`) — high-recall; flags every plausible candidate.
+   The finder is deliberately biased toward false positives; it does not self-filter.
+2. **SCORE** (`./correctness-scorer-prompt.md`) — a cheap-model agent scores each candidate
+   0–100 in independent context (no access to the finder's reasoning). One scorer agent per
+   finding; dispatch in parallel. Rubric: 0 = false positive / pre-existing / not on changed
+   line · 25 = maybe real, unverified · 50 = real but minor or rare · 75 = highly confident ·
+   100 = certain, confirmed by code. Score 0 automatically when `ruff-on-edit`,
+   `commit-quality-gate`, or `risk-corroboration` would already catch it.
+3. **THRESHOLD** — drop findings with `score < 80`. Record them as `advisory` in
+   `specs/<slug>/SUMMARY.md` under `### Advisory Findings` (not silently dropped, not
+   escalated). The threshold is adjustable (lower for high-risk lanes, higher when
+   false-positive noise is a known problem); default is **80**.
+4. **D — two-axis classification.** Findings that survive the threshold carry two labels:
 
 - **Severity** — `P0` (data loss / security / crash) · `P1` (wrong output / broken path) ·
   `P2` (degraded behavior, non-fatal) · `P3` (minor correctness issue)
 - **Rule class** — per `.claude/rules/auto-correct-scope.md`: `Rule 1` (auto-fix obvious bug) ·
   `Rule 2` (auto-add missing standards) · `Rule 3` (auto-fix blocker) · `Rule 4` (STOP — needs
   architectural judgment)
+
+5. **E — residual gate + fix-loop.** See fix routing and residual work gate below.
 
 **Fix routing by Rule class:**
 
@@ -240,6 +256,7 @@ per `auto-correct-scope.md` → Reporting.
 - `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent (per task)
 - `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent (per task)
 - `./correctness-reviewer-prompt.md` - Dispatch final adversarial correctness reviewer (once, whole diff)
+- `./correctness-scorer-prompt.md` - Dispatch cheap-model scorer per candidate finding (SCORE stage, 0–100, threshold 80)
 
 ## Example Workflow
 

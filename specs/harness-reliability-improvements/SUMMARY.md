@@ -42,6 +42,7 @@ Commands are pipe-free and idempotent so `scripts/verify_summary.py --check` can
 | doc-truth lint (hook table ↔ settings.json) | `bash scripts/lint-doc-truth.sh` | 0 | green after 3.1 wiring |
 | verify_summary unit tests | `python3 -m pytest scripts/test_verify_summary.py -q` | 0 | 19 passed |
 | session-knowledge hook test | `bash tests/hooks/session-knowledge.test.sh` | 0 | 7 passed |
+| commit-quality-gate hook test | `bash tests/hooks/commit-quality-gate.test.sh` | 0 | 16 passed (incl. REQUIRE_VERIFY re-run + python3-degrade) |
 | settings.json valid JSON | `jq -e . settings.json` | 0 | SessionStart hook registered |
 
 ### Rollback

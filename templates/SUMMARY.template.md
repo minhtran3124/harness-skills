@@ -67,7 +67,7 @@ Input-type: new spec | spec slice | change request | new initiative | maintenanc
 ### Harness-Delta
 
 <!-- What friction did this task reveal about the workflow itself?
-     fix-direct (done in this task) or backlog (-> /compound -> docs/solutions/).
+     fix-direct (done in this task) or backlog (-> /harness:compound -> docs/solutions/).
      Leave `- none` if the workflow needed no change. -->
 
 - none

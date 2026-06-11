@@ -8,7 +8,7 @@ Related: `plan-format.md`, `guidelines.md`, `orchestration.md`, `skills/feature-
 
 ## Lane-aware autonomy
 
-The intake lane (`specs/<slug>/SUMMARY.md`, set by `/feature-intake`) decides how much
+The intake lane (`specs/<slug>/SUMMARY.md`, set by `/harness:feature-intake`) decides how much
 autonomy applies. Rules 1–4 below are constant; the lane decides whether a plan and a human
 confirmation are required first:
 

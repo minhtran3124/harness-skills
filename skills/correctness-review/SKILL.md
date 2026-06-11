@@ -12,7 +12,7 @@ by `./correctness-reviewer-prompt.md` (high-recall finder) and `./correctness-sc
 
 **Two entry points, one pipeline:**
 
-- **Standalone** — `/correctness-review` on any diff, ad-hoc, outside the workflow gates. Use it
+- **Standalone** — `/harness:correctness-review` on any diff, ad-hoc, outside the workflow gates. Use it
   on a branch before a PR, on uncommitted work, or on any range you name.
 - **In-flow** — `subagent-driven-development` calls this as its always-on final pass after all
   tasks pass their spec + quality reviews, before `finishing-a-development-branch`.
@@ -101,12 +101,12 @@ standalone use). A finding with neither is a hard block — do not report succes
 ## Relationship to other review skills
 
 - **`/code-review` (global):** generic correctness + reuse/simplification/efficiency cleanup with
-  effort levels and a cloud `ultra` mode. `/correctness-review` is the repo-tuned bug-only pass
+  effort levels and a cloud `ultra` mode. `/harness:correctness-review` is the repo-tuned bug-only pass
   (reads `docs/solutions/`, classifies by `auto-correct-scope.md` Rule class, threshold-80). They
   compound — run either or both before merge; neither replaces the other.
-- **`/review-diff`:** visualizes what changed (C4 diagrams + walkthrough). Not a correctness pass.
+- **`/harness:review-diff`:** visualizes what changed (C4 diagrams + walkthrough). Not a correctness pass.
 - **`subagent-driven-development`:** calls this skill as its final adversarial gate. Invoking
-  `/correctness-review` standalone runs the exact same pipeline without the rest of the workflow.
+  `/harness:correctness-review` standalone runs the exact same pipeline without the rest of the workflow.
 
 ## Prompt Templates
 

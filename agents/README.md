@@ -18,7 +18,7 @@ Agent role files are **universal** — they contain no stack-specific names. `PR
 guidelines) for layering, error/validation, and style, and holds only the few execution facts no
 other doc reliably contains (test command, source→test mapping, failure hints). When a repo has
 no such docs, its *Inline fallback* section carries the minimum. `PROJECT.template.md` is the
-pristine template; `PROJECT.md` is the per-repo rendered copy (drafted by `/bootstrap-xia2`).
+pristine template; `PROJECT.md` is the per-repo rendered copy (drafted by `/harness:bootstrap-xia2`).
 
 > **Why an index, not a copy:** restating a repo's architecture/guidelines here would create a
 > second source of truth that drifts. Point to the real doc; inline only when none exists.
@@ -26,7 +26,7 @@ pristine template; `PROJECT.md` is the per-repo rendered copy (drafted by `/boot
 **To reuse these agents in another repo:**
 
 1. Copy `agents/` into the new project.
-2. Run `/bootstrap-xia2` (or edit by hand): point `PROJECT.md` at that repo's convention docs and
+2. Run `/harness:bootstrap-xia2` (or edit by hand): point `PROJECT.md` at that repo's convention docs and
    fill the *Test execution* section. The agent role files do **not** change.
 3. Adjust the inventory table above if you add/remove agents.
 
@@ -48,5 +48,5 @@ This boundary decides whether a capability belongs in `skills/` or `agents/`:
 
 **This is why there is no `brainstorming` agent.** Brainstorming is inherently interactive
 (one question at a time, approval gates, "user reviews the spec"), so it lives only as the
-`/brainstorming` **skill**. A brainstorming subagent would be a category error — and the old
-one was also a stale, drift-prone fork of the skill. Invoke `/brainstorming` directly.
+`/harness:brainstorming` **skill**. A brainstorming subagent would be a category error — and the old
+one was also a stale, drift-prone fork of the skill. Invoke `/harness:brainstorming` directly.

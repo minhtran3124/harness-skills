@@ -1,6 +1,6 @@
 # feature-intake — behavioral test cases
 
-`/feature-intake` is a prompt skill: its classification is produced by the model, so it
+`/harness:feature-intake` is a prompt skill: its classification is produced by the model, so it
 cannot be asserted by a deterministic shell test the way the hooks are. These canaries are
 the analogue of `skills/xia2/tests/` — input prompts paired with the lane / confidence /
 escalation the skill **must** produce. They are run by a human or a meta-eval session, not
@@ -20,7 +20,7 @@ Manual, or batched through a headless session:
 
 ```bash
 # one case at a time, against the real skill
-claude -p "/feature-intake <case prompt>" --output-format text
+claude -p "/harness:feature-intake <case prompt>" --output-format text
 # then check the emitted Lane / Confidence / Escalate against the Expected row
 ```
 

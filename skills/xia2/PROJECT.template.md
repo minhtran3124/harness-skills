@@ -1,6 +1,6 @@
 # xia2 — Project Configuration for `<PROJECT_NAME>`
 
-> **This is a template.** Copy to `PROJECT.md` and fill in. Auto-fill via `/bootstrap-xia2` (recommended), then human-review.
+> **This is a template.** Copy to `PROJECT.md` and fill in. Auto-fill via `/harness:bootstrap-xia2` (recommended), then human-review.
 >
 > Each section below is consumed by `xia2/SKILL.md`. Sections marked **REQUIRED** must be non-empty or the skill halts (strict mode).
 

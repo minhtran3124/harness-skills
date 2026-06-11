@@ -25,15 +25,15 @@ When in doubt, invoke. The HARD-GATE prevents code being written, so the cost of
 ## How to invoke
 
 ```
-/xia2 <feature description>                 # default: Standard depth
-/xia2 <feature> --depth=quick|standard|deep # explicit override
+/harness:xia2 <feature description>                 # default: Standard depth
+/harness:xia2 <feature> --depth=quick|standard|deep # explicit override
 ```
 
 Skill auto-classifies depth from signals defined in `SKILL.md` resolved through `PROJECT.md`. Override with `--depth=` if you have stronger context than the prompt conveys.
 
 To bypass the research step entirely (rare): start the prompt with *"skip research"* or *"just implement it"*. The skill notes the waiver but still surfaces any Deep-signal risks per the HARD-GATE rule.
 
-**First time in a project?** Run `/bootstrap-xia2` to auto-scaffold `PROJECT.md`, then human-review.
+**First time in a project?** Run `/harness:bootstrap-xia2` to auto-scaffold `PROJECT.md`, then human-review.
 
 ---
 
@@ -65,7 +65,7 @@ To use `xia2` in a different project:
 
 1. **Copy the entire `.claude/skills/xia2/` folder** to `<new-project>/.claude/skills/xia2/`. Also copy the `bootstrap-xia2/` skill if you want auto-scan.
 2. **Bootstrap `PROJECT.md`** for the new project:
-   - **Recommended:** invoke `/bootstrap-xia2` — auto-scans the repo and produces a draft `PROJECT.md` with detected values, then human-review.
+   - **Recommended:** invoke `/harness:bootstrap-xia2` — auto-scans the repo and produces a draft `PROJECT.md` with detected values, then human-review.
    - **Manual:** copy `PROJECT.template.md` → `PROJECT.md` and fill in each REQUIRED section.
 3. **Discard `tests/structural/depth-modes-test-cases.md`** — it tests THIS project's `PROJECT.md`. Write your own structural tests using the same table structure.
 4. **Keep `tests/behavioural/pressure-scenarios.md`** — most scenarios are universal (project-specific examples are easy to swap).
@@ -176,4 +176,4 @@ Treat the test suites as the canonical regression check. If a future maintainer 
 ## See also
 
 - `xia` — the original Edgeful-specific version. Kept for backwards compatibility; `xia2` is the recommended portable replacement.
-- `bootstrap-xia2` — sibling skill that bootstraps `PROJECT.md` from a repo scan. Invoke as `/bootstrap-xia2`.
+- `bootstrap-xia2` — sibling skill that bootstraps `PROJECT.md` from a repo scan. Invoke as `/harness:bootstrap-xia2`.

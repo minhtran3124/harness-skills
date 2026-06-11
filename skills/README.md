@@ -11,54 +11,54 @@ This file is the single source of truth for overview, workflow, and cross-skill 
 ### Full Cycle (3+ layers, migration, or spans multiple services)
 
 ```
-/bootstrap-xia2  (first-time repo setup only)
+/harness:bootstrap-xia2  (first-time repo setup only)
   → scaffolds specs/, docs/solutions/, agent-memory/
   → generates xia2/PROJECT.md from repo scan
       ↓
-/feature-intake  (routing entry point — run first on every change request)
+/harness:feature-intake  (routing entry point — run first on every change request)
   → classifies input type + 10-flag risk checklist + hard gates
   → output: lane (tiny|normal|high-risk) + confidence → specs/<slug>/SUMMARY.md
   → routes: tiny → direct edit · normal → subagent-driven · high-risk → full chain below
       ↓
-/brainstorming
+/harness:brainstorming
   → reads: CLAUDE.md, docs/solutions/ (decision track only), recent commits
   → output: specs/<slug>/design.md
       ↓
-/xia2
+/harness:xia2
   → reads: PROJECT.md, CLAUDE.md, .claude/rules/, docs/, docs/solutions/, specs/
   → depth re-evaluated after reading docs
   → output: specs/<slug>/research-brief.md (no code)
       ↓
-/writing-plans
+/harness:writing-plans
   → input: design.md + research-brief.md
   → output: specs/<slug>/PLAN.md
-  → auto-handoff: /visual-planner renders PLAN.html (deterministic script), then opens it
+  → auto-handoff: /harness:visual-planner renders PLAN.html (deterministic script), then opens it
       ↓
-/using-git-worktrees
+/harness:using-git-worktrees
   → creates isolated worktree + branch
       ↓
-/subagent-driven-development        ← same session
-  OR /executing-plans               ← parallel session
+/harness:subagent-driven-development        ← same session
+  OR /harness:executing-plans               ← parallel session
   → implements plan task-by-task
   → two-stage review per task (spec compliance → code quality)
-  → final adversarial correctness review (/correctness-review) over the whole diff before shipping
+  → final adversarial correctness review (/harness:correctness-review) over the whole diff before shipping
       ↓
-/compound  (if non-obvious pattern found)
+/harness:compound  (if non-obvious pattern found)
   → output: docs/solutions/<category>/<slug>.md
       ↓
-/finishing-a-development-branch
+/harness:finishing-a-development-branch
   → PR description, review checklist, merge
 ```
 
 ### Minimum Viable Path (intent clear, in-place edit, <1 day)
 
 ```
-/feature-intake → /xia2 → /writing-plans → implement → /compound (if pattern found)
+/harness:feature-intake → /harness:xia2 → /harness:writing-plans → implement → /harness:compound (if pattern found)
 
-/feature-intake confirms the lane; a tiny lane drops straight to a direct edit.
-Skip /brainstorming when intent is clear.
-Skip /using-git-worktrees for in-place edits.
-/writing-plans still auto-renders PLAN.html via /visual-planner.
+/harness:feature-intake confirms the lane; a tiny lane drops straight to a direct edit.
+Skip /harness:brainstorming when intent is clear.
+Skip /harness:using-git-worktrees for in-place edits.
+/harness:writing-plans still auto-renders PLAN.html via /harness:visual-planner.
 ```
 
 ### Bug Fix Path
@@ -67,9 +67,9 @@ Skip /using-git-worktrees for in-place edits.
 /systematic-debugging  (external — see below)
   → root cause analysis before any fix
       ↓
-fix (implement directly or via /subagent-driven-development)
+fix (implement directly or via /harness:subagent-driven-development)
       ↓
-/compound  (always — root cause is worth preserving)
+/harness:compound  (always — root cause is worth preserving)
 ```
 
 ---
@@ -80,45 +80,45 @@ fix (implement directly or via /subagent-driven-development)
 
 | Skill | Trigger | Output |
 |---|---|---|
-| `/feature-intake` | First, on every change request — classify risk lane + confidence and route | `specs/<slug>/SUMMARY.md` (Lane/Confidence/Reason/Flags) + a route decision |
+| `/harness:feature-intake` | First, on every change request — classify risk lane + confidence and route | `specs/<slug>/SUMMARY.md` (Lane/Confidence/Reason/Flags) + a route decision |
 
 ### Setup
 
 | Skill | Trigger | Output |
 |---|---|---|
-| `/bootstrap-xia2` | First-time repo setup or major architectural change | Scaffolded dirs + `xia2/PROJECT.md` draft |
+| `/harness:bootstrap-xia2` | First-time repo setup or major architectural change | Scaffolded dirs + `xia2/PROJECT.md` draft |
 
 ### Discovery & Design
 
 | Skill | Trigger | Output |
 |---|---|---|
-| `/brainstorming` | Before any new feature, component, or behavior change | `specs/<slug>/design.md` |
-| `/xia2` | Before implementing anything — research what already exists (portable; reads `PROJECT.md`) | `specs/<slug>/research-brief.md` |
+| `/harness:brainstorming` | Before any new feature, component, or behavior change | `specs/<slug>/design.md` |
+| `/harness:xia2` | Before implementing anything — research what already exists (portable; reads `PROJECT.md`) | `specs/<slug>/research-brief.md` |
 
 ### Planning
 
 | Skill | Trigger | Output |
 |---|---|---|
-| `/writing-plans` | After design is approved and xia2 brief is ready | `specs/<slug>/PLAN.md` (+ auto-renders `PLAN.html`) |
-| `/visual-planner` | Render a `PLAN.md` for visual review (auto-invoked by `/writing-plans`; also standalone) | `specs/<slug>/PLAN.html` (untracked, local-only) |
+| `/harness:writing-plans` | After design is approved and xia2 brief is ready | `specs/<slug>/PLAN.md` (+ auto-renders `PLAN.html`) |
+| `/harness:visual-planner` | Render a `PLAN.md` for visual review (auto-invoked by `/harness:writing-plans`; also standalone) | `specs/<slug>/PLAN.html` (untracked, local-only) |
 
 ### Execution
 
 | Skill | Trigger | Output |
 |---|---|---|
-| `/using-git-worktrees` | Before starting feature work needing isolation | Isolated worktree + branch |
-| `/subagent-driven-development` | Executing a plan in the current session (fresh subagent per task) | Implemented tasks, two-stage reviewed per task + final adversarial correctness review (delegates to `/correctness-review`) |
-| `/executing-plans` | Executing a plan in a separate parallel session (checkpoint-based) | Same as above |
+| `/harness:using-git-worktrees` | Before starting feature work needing isolation | Isolated worktree + branch |
+| `/harness:subagent-driven-development` | Executing a plan in the current session (fresh subagent per task) | Implemented tasks, two-stage reviewed per task + final adversarial correctness review (delegates to `/harness:correctness-review`) |
+| `/harness:executing-plans` | Executing a plan in a separate parallel session (checkpoint-based) | Same as above |
 
 ### Review & Shipping
 
 | Skill | Trigger | Output |
 |---|---|---|
-| `/correctness-review` | After implementation — adversarial runtime-bug hunt over a diff. **Standalone** (any diff, no workflow gate) or called by `/subagent-driven-development` as its final pass | Findings scored (0–100, threshold 80) + classified (Severity + Rule class) → fixes or escalations |
-| `/review-diff` | After implementation — visualize what changed | Markdown review with C4 diagrams |
-| `/compound` | After session with non-obvious bug fix, pattern, or architectural decision | `docs/solutions/<category>/<slug>.md` |
-| `/create-pr` | When only a PR description is needed | `PR_TEMPLATE.md` |
-| `/finishing-a-development-branch` | Implementation complete, tests pass | Runs tests, pushes, opens a PR (never merges) |
+| `/harness:correctness-review` | After implementation — adversarial runtime-bug hunt over a diff. **Standalone** (any diff, no workflow gate) or called by `/harness:subagent-driven-development` as its final pass | Findings scored (0–100, threshold 80) + classified (Severity + Rule class) → fixes or escalations |
+| `/harness:review-diff` | After implementation — visualize what changed | Markdown review with C4 diagrams |
+| `/harness:compound` | After session with non-obvious bug fix, pattern, or architectural decision | `docs/solutions/<category>/<slug>.md` |
+| `/harness:create-pr` | When only a PR description is needed | `PR_TEMPLATE.md` |
+| `/harness:finishing-a-development-branch` | Implementation complete, tests pass | Runs tests, pushes, opens a PR (never merges) |
 
 ---
 
@@ -141,20 +141,20 @@ If one of these isn't available in your environment, the workflows degrade grace
 ## Skill Handoff Map
 
 ```
-/bootstrap-xia2             ──► (repo setup — terminal; user now invokes workflow)
-/feature-intake             ──► tiny: direct edit · normal: /subagent-driven-development
-                                high-risk: /brainstorming (full chain) · low confidence: escalate
-/brainstorming              ──► /xia2 → /writing-plans (the only valid next skills)
-/xia2                       ──► research brief → user/skill decides next step
-/writing-plans              ──► /visual-planner (auto: render PLAN.html) → /using-git-worktrees
-                                → /subagent-driven-development
-                                OR /executing-plans (parallel session)
-/visual-planner             ──► PLAN.html (terminal — visual artifact; back to writing-plans handoff)
-/subagent-driven-development ──► /correctness-review (final pass) → /compound → /finishing-a-development-branch
-/correctness-review         ──► (standalone — runs the same pipeline ad-hoc on any diff; no gate)
-/systematic-debugging       ──► fix → /compound
-/compound                   ──► nothing (terminal — crystallization is end state)
-/finishing-a-development-branch ──► nothing (terminal — shipped)
+/harness:bootstrap-xia2                 ──► (repo setup — terminal; user now invokes workflow)
+/harness:feature-intake                 ──► tiny: direct edit · normal: /harness:subagent-driven-development
+                                            high-risk: /harness:brainstorming (full chain) · low confidence: escalate
+/harness:brainstorming                  ──► /harness:xia2 → /harness:writing-plans (the only valid next skills)
+/harness:xia2                           ──► research brief → user/skill decides next step
+/harness:writing-plans                  ──► /harness:visual-planner (auto: render PLAN.html) → /harness:using-git-worktrees
+                                            → /harness:subagent-driven-development
+                                            OR /harness:executing-plans (parallel session)
+/harness:visual-planner                 ──► PLAN.html (terminal — visual artifact; back to writing-plans handoff)
+/harness:subagent-driven-development    ──► /harness:correctness-review (final pass) → /harness:compound → /harness:finishing-a-development-branch
+/harness:correctness-review             ──► (standalone — runs the same pipeline ad-hoc on any diff; no gate)
+/systematic-debugging                   ──► fix → /harness:compound
+/harness:compound                       ──► nothing (terminal — crystallization is end state)
+/harness:finishing-a-development-branch ──► nothing (terminal — shipped)
 ```
 
 ---
@@ -164,17 +164,17 @@ If one of these isn't available in your environment, the workflows degrade grace
 Skills read from and write to `docs/solutions/`:
 
 ```
-writes ──► /compound
+writes ──► /harness:compound
            docs/solutions/<category>/<slug>.md
            front-matter: problem_type (bug | knowledge | decision | failure),
                          module, tags, severity, applicable_when,
                          affects, supersedes, confidence, confirmed_at
 
-reads  ◄── /brainstorming  (decision track only — avoid re-proposing rejected approaches)
-       ◄── /xia2           (all tracks — module, affects, confidence filtering)
+reads  ◄── /harness:brainstorming  (decision track only — avoid re-proposing rejected approaches)
+       ◄── /harness:xia2           (all tracks — module, affects, confidence filtering)
 ```
 
-Schema reference: `docs/solutions/README.md` (scaffolded by `/bootstrap-xia2`).
+Schema reference: `docs/solutions/README.md` (scaffolded by `/harness:bootstrap-xia2`).
 
 ---
 
@@ -202,7 +202,7 @@ Each entry carries:
 2. Debug artifact check (`breakpoint()`, bare `print()`)
 3. Targeted pytest for changed `app/` files
 
-When ≥5 `app/` files are staged, the hook hints: `★ Consider running /compound`.
+When ≥5 `app/` files are staged, the hook hints: `★ Consider running /harness:compound`.
 
 ---
 
@@ -211,7 +211,7 @@ When ≥5 `app/` files are staged, the hook hints: `★ Consider running /compou
 Notes preserved from the former per-skill READMEs. For full runtime behavior read each skill's `SKILL.md`.
 The diagrams below render natively in the GitHub README — no clone needed.
 
-### `/compound`
+### `/harness:compound`
 
 > **One-liner:** an orchestrator fans out read-only subagents to mine the session transcript, then writes every knowledge doc itself.
 
@@ -252,7 +252,7 @@ graph LR
 | **Moderate** | partial match | Write `[slug]-2.md` |
 | **Low** | no real match | Write `[slug].md` |
 
-### `/visual-planner`
+### `/harness:visual-planner`
 
 > **One-liner:** a deterministic script (not the LLM) renders `PLAN.md` → a self-contained, untracked `PLAN.html`; a second script serves and opens it.
 
@@ -271,7 +271,7 @@ graph LR
 
 - **Deterministic script, not LLM transcription.** The skill only runs the script and relays its report — never emits HTML token-by-token. Transcribing a ~340-line template every run is expensive and the least reproducible part of the pipeline; a script makes the fill free and stable.
 - **Local-only output.** `PLAN.html` is untracked — it lives beside `PLAN.md` in `specs/`, which is never committed.
-- **Auto-invoked by `/writing-plans`.** After a plan is approved and before the execution handoff, `writing-plans` dispatches a `visual-planner` sub-agent to render `PLAN.html`, then opens it. Also runs standalone as `/visual-planner <slug>`.
+- **Auto-invoked by `/harness:writing-plans`.** After a plan is approved and before the execution handoff, `writing-plans` dispatches a `visual-planner` sub-agent to render `PLAN.html`, then opens it. Also runs standalone as `/harness:visual-planner <slug>`.
 - **Why serve instead of `file://`?** Localhost is a browser *secure context*, so per-task "copy `<verify>`" buttons use `navigator.clipboard`; `--file` (`file://`) is faster but falls back to `execCommand`. Auto-view is environment-dependent (no display on headless/remote), so it stays an explicit step.
 - **Self-check before claiming success.** The script asserts non-empty output, no surviving `{{PLACEHOLDER}}`, the `slug` present, and one `<section data-wave>` per distinct wave. On non-zero exit, surface the `SELF-CHECK FAILED:` lines verbatim — do not claim success.
 
@@ -284,7 +284,7 @@ graph LR
     C --> D["render_plan.py --review<br/>→ impact dashboard + blast-radius table + risk cards"]
 ```
 
-### `/xia2`
+### `/harness:xia2`
 
 > **One-liner:** one portable skill; project-specific knowledge lives in a swappable `PROJECT.md` sibling.
 
@@ -297,10 +297,10 @@ graph LR
 ```
 
 - **Portable by design.** Universal logic in `SKILL.md`; project-specific signal mappings in `PROJECT.md`. Same skill works across projects by swapping `PROJECT.md`.
-- **PROJECT-CONFIG-GATE halts** when `PROJECT.md` is missing/incomplete. Run `/bootstrap-xia2` first.
+- **PROJECT-CONFIG-GATE halts** when `PROJECT.md` is missing/incomplete. Run `/harness:bootstrap-xia2` first.
 - **Fork to another project:**
   1. Copy `skills/xia2/` (and `skills/bootstrap-xia2/` for auto-scan).
-  2. Run `/bootstrap-xia2` in the new repo to draft `PROJECT.md` → human-review.
+  2. Run `/harness:bootstrap-xia2` in the new repo to draft `PROJECT.md` → human-review.
   3. Discard `tests/structural/depth-modes-test-cases.md` (tests this project's `PROJECT.md`) — author your own.
   4. Keep `tests/behavioural/pressure-scenarios.md` — most scenarios are universal.
 - **Maintenance discipline:**

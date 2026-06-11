@@ -67,7 +67,7 @@ digraph process {
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" [shape=box];
     "More tasks remain?" [shape=diamond];
-    "Run /correctness-review over entire diff" [shape=box];
+    "Run /harness:correctness-review over entire diff" [shape=box];
     "Correctness reviewer finds bugs?" [shape=diamond];
     "Implementer subagent fixes correctness bugs" [shape=box];
     "Use finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
@@ -88,10 +88,10 @@ digraph process {
     "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
     "Mark task complete in TodoWrite" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Run /correctness-review over entire diff" [label="no"];
-    "Run /correctness-review over entire diff" -> "Correctness reviewer finds bugs?";
+    "More tasks remain?" -> "Run /harness:correctness-review over entire diff" [label="no"];
+    "Run /harness:correctness-review over entire diff" -> "Correctness reviewer finds bugs?";
     "Correctness reviewer finds bugs?" -> "Implementer subagent fixes correctness bugs" [label="yes"];
-    "Implementer subagent fixes correctness bugs" -> "Run /correctness-review over entire diff" [label="re-review"];
+    "Implementer subagent fixes correctness bugs" -> "Run /harness:correctness-review over entire diff" [label="re-review"];
     "Correctness reviewer finds bugs?" -> "Use finishing-a-development-branch" [label="no"];
 }
 ```
@@ -152,10 +152,10 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 After every task's spec + quality review passes, run **one** adversarial correctness review over
 the entire implementation diff before handing off to `finishing-a-development-branch`. This pass
-**is the `/correctness-review` skill — delegate to it; do not re-implement the pipeline here.**
+**is the `/harness:correctness-review` skill — delegate to it; do not re-implement the pipeline here.**
 
 **Range to pass:** `BASE` = commit before task 1, `HEAD` = current commit after all tasks, plus
-the list of touched files. `/correctness-review` then runs FIND → SCORE → THRESHOLD(80) →
+the list of touched files. `/harness:correctness-review` then runs FIND → SCORE → THRESHOLD(80) →
 classify → fix-loop: it reads `docs/solutions/` for compound read-back, dispatches the
 high-recall finder with a different (most capable) model, scores each candidate 0–100 with a
 cheap model, drops `< 80` to advisory, classifies survivors by Severity + `auto-correct-scope.md`
@@ -169,7 +169,7 @@ Neither asks *"cho dù spec đúng, code này có chạy sai ở runtime không?
 implements a flawed spec passes both — the gap that lets real bugs survive to production and get
 caught by external reviewers post-push. The correctness pass closes it.
 
-**Relationship to `/code-review`:** `/correctness-review` is the always-on in-flow gate. For
+**Relationship to `/code-review`:** `/harness:correctness-review` is the always-on in-flow gate. For
 high-risk lanes you may *additionally* run `/code-review high|ultra` before merge — they
 compound, they don't replace each other.
 
@@ -211,7 +211,7 @@ per `auto-correct-scope.md` → Reporting.
 - `./implementer-prompt.md` - Dispatch implementer subagent
 - `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent (per task)
 - `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent (per task)
-- Final adversarial correctness pass - delegated to `/correctness-review` (see `skills/correctness-review/`); its `correctness-{reviewer,scorer}-prompt.md` live there, not here.
+- Final adversarial correctness pass - delegated to `/harness:correctness-review` (see `skills/correctness-review/`); its `correctness-{reviewer,scorer}-prompt.md` live there, not here.
 
 ## Example Workflow
 
@@ -283,7 +283,7 @@ Code reviewer: ✅ Approved
 ...
 
 [After all tasks — final adversarial correctness review over the whole diff]
-[Run /correctness-review over the whole diff (BASE = before task 1, HEAD = now)]
+[Run /harness:correctness-review over the whole diff (BASE = before task 1, HEAD = now)]
 Correctness reviewer: 🐛 P1 / Rule 1 — app/services/trade_log_service.py:42
   Trigger: get_recent() called for a user with zero logs
   Wrong outcome: returns None, router does len(None) → 500

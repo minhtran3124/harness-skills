@@ -1,7 +1,7 @@
 # Adversarial Correctness Reviewer Prompt Template
 
 Use this template for a single adversarial review pass — once, over the entire diff under
-review. Invoked two ways: standalone via `/correctness-review` (ad-hoc on any diff), or as the
+review. Invoked two ways: standalone via `/harness:correctness-review` (ad-hoc on any diff), or as the
 final pass inside `subagent-driven-development` (after every task's spec + quality review has
 passed and before `finishing-a-development-branch`).
 
@@ -53,7 +53,7 @@ Task tool (general-purpose):
     Before hunting for new bugs, check whether this diff reintroduces a known past failure.
 
     **If `docs/solutions/` exists and is non-empty**, run the established pull pattern
-    (mirrors what `/xia2` uses — `skills/xia2/SKILL.md:95-98`, with the ≤3 files step at line 98):
+    (mirrors what `/harness:xia2` uses — `skills/xia2/SKILL.md:95-98`, with the ≤3 files step at line 98):
 
     1. Read `docs/solutions/INDEX.md` for an overview of all recorded findings.
     2. Read `docs/solutions/critical-patterns.md` in full (regardless of domain).

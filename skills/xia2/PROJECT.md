@@ -2,7 +2,7 @@
 
 This file provides project-specific signal mappings consumed by `xia2/SKILL.md`. It is a reusable template — regenerate it per project.
 
-> **Maintenance:** auto-scan via `/bootstrap-xia2` (init or update mode), then human-review. Re-validate after major architectural changes.
+> **Maintenance:** auto-scan via `/harness:bootstrap-xia2` (init or update mode), then human-review. Re-validate after major architectural changes.
 
 ---
 

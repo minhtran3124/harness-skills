@@ -16,7 +16,7 @@ if [ "$WORD_COUNT" -gt 6 ] && [ "$IS_IMPL" -eq 1 ] && [ "$HAS_PLAN" -eq 0 ]; the
   jq -cn '{
     hookSpecificOutput: {
       hookEventName: "UserPromptSubmit",
-      additionalContext: "Implementation-intent request with no plan referenced. Run /feature-intake to set the lane. Tiny lane → proceed with a direct edit (no confirmation needed). Normal/high-risk → produce a plan first. Pause for the human only if the direction is ambiguous, confidence is low, or a hard gate fires (auth/authz/data-loss/migration/audit/external-provider/public-contract/high-blast file)."
+      additionalContext: "Implementation-intent request with no plan referenced. Run /harness:feature-intake to set the lane. Tiny lane → proceed with a direct edit (no confirmation needed). Normal/high-risk → produce a plan first. Pause for the human only if the direction is ambiguous, confidence is low, or a hard gate fires (auth/authz/data-loss/migration/audit/external-provider/public-contract/high-blast file)."
     }
   }'
 fi

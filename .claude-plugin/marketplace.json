@@ -1,0 +1,11 @@
+{
+  "name": "harness-skills",
+  "description": "Marketplace for the harness plugin — workflow skills + risk/trust governance",
+  "plugins": [
+    {
+      "name": "harness",
+      "source": "./",
+      "description": "14 workflow skills (intake → brainstorm → plan → build → review → ship), namespaced as harness:<skill>"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: visual-planner
-description: Use after a PLAN.md is written, when you want to review it visually before execution (auto-invoked by /writing-plans; also standalone as /visual-planner <slug>). Renders specs/<slug>/PLAN.md to a self-contained HTML page; optional --review mode overlays graph-derived blast-radius and risk.
+description: Use after a PLAN.md is written, when you want to review it visually before execution (auto-invoked by /harness:writing-plans; also standalone as /harness:visual-planner <slug>). Renders specs/<slug>/PLAN.md to a self-contained HTML page; optional --review mode overlays graph-derived blast-radius and risk.
 allowed-tools: Bash, Read, Glob, Write, mcp__code-review-graph__list_graph_stats_tool, mcp__code-review-graph__query_graph_tool, mcp__code-review-graph__get_impact_radius_tool, mcp__code-review-graph__get_affected_flows_tool
 ---
 
@@ -40,9 +40,9 @@ answers".)
 ## Invocation
 
 ```
-/visual-planner <path-or-slug>          # render PLAN.md → PLAN.html
-/visual-planner <slug> --view           # render (if stale) then open in the browser
-/visual-planner <file.html> --view      # open an already-rendered HTML file as-is
+/harness:visual-planner <path-or-slug>          # render PLAN.md → PLAN.html
+/harness:visual-planner <slug> --view           # render (if stale) then open in the browser
+/harness:visual-planner <file.html> --view      # open an already-rendered HTML file as-is
 ```
 
 **Routing:** if the arguments contain `--view`, run `view_plan.py` (see "Viewing the plan" below),

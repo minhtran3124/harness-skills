@@ -18,16 +18,16 @@ See @rules/behavior.md — that file is the single source of truth.
 
 ## Skill Workflow
 
-`feature-intake` runs first and **routes by lane** — it decides how much of the chain below
+`/harness:feature-intake` runs first and **routes by lane** — it decides how much of the chain below
 actually runs (tiny lane skips straight to a direct edit; high-risk runs the full chain).
 Skipping a step the lane requires is a hard gate violation:
 
 ```
-feature-intake (classify → lane + confidence → route)
-  → [brainstorming → xia2 →] writing-plans → using-git-worktrees
-  → subagent-driven-development (or executing-plans)
-  → correctness-review (final adversarial pass — also invokable standalone on any diff)
-  → compound → finishing-a-development-branch
+/harness:feature-intake (classify → lane + confidence → route)
+  → [/harness:brainstorming → /harness:xia2 →] /harness:writing-plans → /harness:using-git-worktrees
+  → /harness:subagent-driven-development (or /harness:executing-plans)
+  → /harness:correctness-review (final adversarial pass — also invokable standalone on any diff)
+  → /harness:compound → /harness:finishing-a-development-branch
 ```
 
 Lane → ceremony; confidence/ambiguity → whether a human is asked. See `rules/orchestration.md`
@@ -62,7 +62,7 @@ Hooks live in `hooks/` (top-level). Register them in `settings.json` under the a
 - `settings.local.json` overrides `settings.json` — user-specific permissions and allowlists live there, not in the shared config
 - `.mcp.json` is at repo root (not in `.claude/`) — holds **only** `mcpServers` (the project's `code-review-graph` server, launched via `uvx`; requires `uv` installed). `context7` is a **user-level** MCP server (HTTP, `CONTEXT7_API_KEY`), not in this file. `env`, `permissions`, `hooks`, `statusLine`, `enabledPlugins` belong in `settings.json`, not here
 - `docs/solutions/` entries have a `confirmed_at` field; treat entries older than 30 days as potentially stale
-- When ≥5 `app/` files are staged, the commit hook hints to run `/compound` — don't skip it
+- When ≥5 `app/` files are staged, the commit hook hints to run `/harness:compound` — don't skip it
 - Before changing `hooks/` or `scripts/`, run `bash scripts/run-tests.sh` — CI (`harness-ci`) runs the same suite on ubuntu + macos, including a doc-truth lint that fails when docs reference missing paths or the hook table contradicts `settings.json`
 
 <!-- code-review-graph MCP tools -->

@@ -12,20 +12,20 @@ Pick one convention per repo and stick with it. This project uses: **`<slug>/`**
 
 | File | Produced by | Purpose |
 |---|---|---|
-| `design.md` | `/brainstorming` | Approved design — the WHAT and WHY |
-| `research-brief.md` | `/xia2` | What already exists, alternatives, lightest path |
-| `plan.md` | `/writing-plans` | Task-by-task plan (XML tasks per `rules/plan-format.md`) |
+| `design.md` | `/harness:brainstorming` | Approved design — the WHAT and WHY |
+| `research-brief.md` | `/harness:xia2` | What already exists, alternatives, lightest path |
+| `plan.md` | `/harness:writing-plans` | Task-by-task plan (XML tasks per `rules/plan-format.md`) |
 
 ## Lifecycle
 
 ```
-/brainstorming → design.md
-/xia2          → research-brief.md
-/writing-plans → plan.md
-/using-git-worktrees → worktree + branch
-/subagent-driven-development | /executing-plans → implementation
-/compound → crystallize learnings into docs/solutions/
-/finishing-a-development-branch → PR (never merges)
+/harness:brainstorming → design.md
+/harness:xia2          → research-brief.md
+/harness:writing-plans → plan.md
+/harness:using-git-worktrees → worktree + branch
+/harness:subagent-driven-development | /harness:executing-plans → implementation
+/harness:compound → crystallize learnings into docs/solutions/
+/harness:finishing-a-development-branch → PR (never merges)
 ```
 
 See [../skills/README.md](../skills/README.md) for the full workflow map.

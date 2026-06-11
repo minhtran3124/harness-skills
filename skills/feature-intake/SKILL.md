@@ -45,7 +45,7 @@ add ceremony — most types collapse onto an existing workflow path.
 | Change request | Change, fix, or refine accepted behavior | story/PLAN or direct patch |
 | New initiative | A larger area needing multiple stories | initiative notes + PLANs |
 | Maintenance | Dependency / perf / security / ops work | story/PLAN or decision |
-| Harness improvement | Change to .claude/skills/rules/hooks/docs themselves | direct docs/skill update or `/compound` |
+| Harness improvement | Change to .claude/skills/rules/hooks/docs themselves | direct docs/skill update or `/harness:compound` |
 
 ## Step 2 — Run the risk checklist (10 flags)
 
@@ -140,8 +140,8 @@ of lane (audit-heavy work / calibrating trust). See `rules/orchestration.md` →
 | Lane | Route | Human checkpoint |
 |---|---|---|
 | **tiny** | Direct `Edit` (no plan). Proof = quick-check hooks (`ruff-on-edit`, `auto-test-on-change`, `commit-quality-gate`). | none (unless confidence low / ambiguous) |
-| **normal** | `/subagent-driven-development` (+ `wave-parallelism` for independent tasks). Two-stage agent review per task. | only if confidence low / ambiguous |
-| **high-risk** | Full chain: `/brainstorming` → `/xia2` → `/writing-plans` → `/subagent-driven-development`; record a decision via `/compound` when architecture/behavior changes. | only on ambiguity or a hard gate |
+| **normal** | `/harness:subagent-driven-development` (+ `wave-parallelism` for independent tasks). Two-stage agent review per task. | only if confidence low / ambiguous |
+| **high-risk** | Full chain: `/harness:brainstorming` → `/harness:xia2` → `/harness:writing-plans` → `/harness:subagent-driven-development`; record a decision via `/harness:compound` when architecture/behavior changes. | only on ambiguity or a hard gate |
 
 After routing, hand off. The downstream skills already enforce their own gates and proof.
 

@@ -8,7 +8,7 @@ Add an entry only when the pattern:
 
 ## Entries
 
-_(none yet — added by `/compound` when a pattern qualifies)_
+_(none yet — added by `/harness:compound` when a pattern qualifies)_
 
 <!--
 Example entry shape:

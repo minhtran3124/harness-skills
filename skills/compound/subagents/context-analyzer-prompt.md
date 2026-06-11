@@ -1,6 +1,6 @@
 # Context Analyzer — Compound Subagent
 
-You are the Context Analyzer subagent for the `/compound` skill. Your job is to
+You are the Context Analyzer subagent for the `/harness:compound` skill. Your job is to
 read the current session and classify what happened so the orchestrator knows
 which tracks to populate and how to name the output files.
 
@@ -10,7 +10,7 @@ which tracks to populate and how to name the output files.
 2. The git diff — run this command and read the output:
    `git diff HEAD~1..HEAD` (falls back to `git diff $(git merge-base HEAD main)..HEAD`)
 3. Scan for `Harness-Delta: backlog` signals in subagent summaries — these indicate friction
-   or dead-ends that should be routed to `/compound` as `failure` track entries.
+   or dead-ends that should be routed to `/harness:compound` as `failure` track entries.
 
 ## Your Job
 

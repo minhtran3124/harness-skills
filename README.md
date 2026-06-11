@@ -17,18 +17,33 @@ steps allowed.
 
 ### Add to an existing project
 
-One-liner that clones the harness, builds `.claude/`, and leaves your project root clean:
+Installation has two parts: the **skills** (as a Claude Code plugin) and the **project harness** (hooks, rules, templates, settings).
+
+**1. Skills (plugin):**
+
+```
+/plugin marketplace add minhtran3124/harness-skills
+/plugin install harness@harness-skills
+```
+
+This installs the skill library, namespaced under `harness:` — summon them as `/harness:feature-intake`, `/harness:writing-plans`, and so on.
+
+**2. Project harness (hooks/rules/templates/settings):** one-liner that clones the harness, builds `.claude/`, and leaves your project root clean — it installs the governance layer only:
 
 ```bash
 curl -fsSL "https://raw.githubusercontent.com/minhtran3124/harness-skills/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --yes
 ```
 
-Everything the harness needs lives entirely in a gitignored `.claude/` (skills, agents, hooks, rules, templates, settings) — the only root file is `.mcp.json`, which wires the code-review-graph MCP server (merged into your existing `.mcp.json` if you have one; Claude Code only reads this file at the project root). The installer never stages files at your project root, so it never overwrites or deletes anything there. **To update, just re-run the one-liner** (idempotent; `.claude/` is merge-synced, non-harness entries kept).
+Everything the harness needs lives entirely in a gitignored `.claude/` (agents, hooks, rules, templates, settings) — the only root file is `.mcp.json`, which wires the code-review-graph MCP server (merged into your existing `.mcp.json` if you have one; Claude Code only reads this file at the project root). The installer never stages files at your project root, so it never overwrites or deletes anything there. **To update, just re-run the one-liner** (idempotent; `.claude/` is merge-synced, non-harness entries kept).
 
 Needs `git` + [jq](https://jqlang.github.io/jq/); [uv](https://docs.astral.sh/uv/) is strongly recommended — the code-review-graph MCP server launches through `uvx`, and the installer warns when it's missing.
 Flags: `--directory <path>` · `--branch <name>` · `--source <local checkout>` · `--keep-sources` · `--dry-run`.
 
 Then **restart Claude Code** so it loads the skills, agents, and hooks.
+
+#### Migrating from flat skills
+
+Projects installed before the plugin split keep working until re-synced. After you re-sync (re-run the installer and install the plugin), the bare `/skill` names are gone — use the namespaced `/harness:<skill>` form (e.g. `/harness:compound` in place of the old bare `compound` name).
 
 ### Develop on this repo
 
@@ -72,26 +87,26 @@ The graph data is written to `.code-review-graph/` (gitignored). The `context7` 
 
 ## The skill workflow
 
-Each step hands off to the next; `/feature-intake` runs first and decides how many steps apply.
+Each step hands off to the next; `/harness:feature-intake` runs first and decides how many steps apply.
 
 ```
-/feature-intake                  classify risk lane + confidence, route (run first)
+/harness:feature-intake                  classify risk lane + confidence, route (run first)
         |
-/brainstorming                   explore intent & design  (high-risk lane)
+/harness:brainstorming                   explore intent & design  (high-risk lane)
         |
-/xia2                            research what already exists
+/harness:xia2                            research what already exists
         |
-/writing-plans                   turn design into tasks
+/harness:writing-plans                   turn design into tasks
         |
-/visual-planner   (auto)         render plan to HTML for review
+/harness:visual-planner   (auto)         render plan to HTML for review
         |
-/using-git-worktrees             isolated branch + worktree
+/harness:using-git-worktrees             isolated branch + worktree
         |
-/subagent-driven-development     build it  (or /executing-plans)
+/harness:subagent-driven-development     build it  (or /harness:executing-plans)
         |
-/compound                        capture non-obvious learnings
+/harness:compound                        capture non-obvious learnings
         |
-/finishing-a-development-branch  PR, review, merge
+/harness:finishing-a-development-branch  PR, review, merge
 ```
 
 ## Further reading
@@ -111,7 +126,7 @@ This harness remixes ideas from people who generously shared their agentic-codin
 |---|---|---|
 | [superpowers](https://github.com/obra/superpowers) | Jesse Vincent ([@obra](https://github.com/obra)) | The skill engine — composable `/skills`, brainstorm-before-code, TDD, a fresh subagent per task, plus hooks & continuous learning. |
 | [Get Shit Done (GSD)](https://github.com/gsd-build/get-shit-done) | TÂCHES ([@gsd-build](https://github.com/gsd-build)) | Spec-driven development + treating the context window as a managed resource — atomic plans run in fresh subagent contexts, stitched with git commits. |
-| [Compound engineering](https://every.to/guides/compound-engineering) | Kieran Klaassen & [Every](https://every.to) | The *plan → work → review → compound* learning loop — every bug, decision, and insight captured for future agents (our `/compound` + `docs/solutions/`). |
+| [Compound engineering](https://every.to/guides/compound-engineering) | Kieran Klaassen & [Every](https://every.to) | The *plan → work → review → compound* learning loop — every bug, decision, and insight captured for future agents (our `/harness:compound` + `docs/solutions/`). |
 | [harness-experimental](https://github.com/hoangnb24/harness-experimental) | Bang Hoang ([@hoangnb24](https://github.com/hoangnb24)) | The risk/trust harness — lanes, hard gates, and *"ceremony scales with risk; interruption scales with ambiguity."* |
 
 ## Author

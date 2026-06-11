@@ -54,7 +54,7 @@ Hooks live in `hooks/` (top-level). Register them in `settings.json` under the a
 | `render-plan-on-write.sh` | PostToolUse (Edit/Write on `specs/*/PLAN.md`) | Auto-re-render `PLAN.html` via `render_plan.py` (deterministic, non-blocking) | ✅ |
 | `scope-gate.sh` | UserPromptSubmit | Warn on implementation intent with no plan referenced (lane-aware) | ✅ |
 | `state-breadcrumb.sh` | SessionEnd | Append a dated session breadcrumb to `specs/STATE.md` (`## Session End Log`) for cross-session resumption; never blocks | ✅ |
-| `auto-test-on-change.sh` | PostToolUse (Edit/Write) | `pytest` on changed files | ⬜ dormant |
+| `auto-test-on-change.sh` | PostToolUse (Edit/Write) | Run the matching test runner on a changed test file — pytest / vitest / jest / `npm test` / `go test`, detected per file; `AUTO_TEST_CMD` (+ `AUTO_TEST_PATTERN`) overrides for other ecosystems | ⬜ dormant |
 
 ## Gotchas
 

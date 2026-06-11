@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the claude-skills harness into a target project.
+# Install the claude-skills harness governance layer (hooks/rules/templates); skills via plugin.
 #
 # Fetches the harness source (git clone into a temp dir, or a local checkout via --source),
 # then builds the loadable .claude/ in the target via deploy-harness.sh --target. The target
@@ -26,7 +26,7 @@ KEEP_SOURCES=0
 # target root — a previous installer staged these at the root and pruned them afterward,
 # which destroyed real project files when those names already existed (or when run inside
 # the harness-skills repo itself).
-PAYLOAD=(skills agents hooks rules templates settings.json scripts/deploy-harness.sh)
+PAYLOAD=(hooks rules templates settings.json scripts/deploy-harness.sh)
 STAGE_NAME=".harness-source"
 
 # ---------- styling ----------
@@ -43,7 +43,8 @@ fail() { printf '\n  %s✗ %s%s\n\n' "$RED" "$*" "$R" >&2; exit 1; }
 
 usage() {
   cat <<EOF
-Install the claude-skills harness into a target project.
+Install the claude-skills harness governance layer (hooks/rules/templates) into a target
+project; skills via plugin.
 
 Usage: install-harness.sh [options]
 
@@ -211,4 +212,7 @@ printf '  %s↻ Restart Claude Code in that project so it loads the harness.%s\n
 if [ "$UVX_MISSING" -eq 1 ]; then
   warn "Install uv before that restart, or the code-review-graph MCP server cannot launch."
 fi
+printf '\n  %sSkills are installed separately as a plugin:%s\n' "$B" "$R"
+printf '    %s/plugin marketplace add minhtran3124/harness-skills%s\n' "$C" "$R"
+printf '    %s/plugin install harness@harness-skills%s\n' "$C" "$R"
 printf '\n'

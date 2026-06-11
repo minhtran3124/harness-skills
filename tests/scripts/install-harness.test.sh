@@ -21,12 +21,13 @@ else
   fail "rc=$RC, .claude exists: $([ -e "$tgt/.claude" ] && echo yes || echo no)"
 fi
 
-t "fresh install creates valid .mcp.json, builds .claude/, prunes root sources"
+t "fresh install creates valid .mcp.json, builds governance .claude/ (no skills/agents — plugin-shipped), prunes root sources"
 tgt=$(target)
 run_install "$tgt"
 if [ "$RC" -eq 0 ] \
    && jq -e '.mcpServers["code-review-graph"]' "$tgt/.mcp.json" >/dev/null 2>&1 \
-   && [ -d "$tgt/.claude/skills" ] && [ ! -e "$tgt/skills" ]; then
+   && [ -d "$tgt/.claude/hooks" ] && [ -d "$tgt/.claude/rules" ] && [ -f "$tgt/.claude/settings.json" ] \
+   && [ ! -e "$tgt/.claude/skills" ] && [ ! -e "$tgt/.claude/agents" ] && [ ! -e "$tgt/skills" ]; then
   pass
 else
   fail "rc=$RC — mcp/.claude/prune state wrong: $(ls -a "$tgt" | tr '\n' ' ')"

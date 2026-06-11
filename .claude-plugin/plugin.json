@@ -1,0 +1,8 @@
+{
+  "name": "harness",
+  "version": "0.1.0",
+  "description": "Skill framework + risk/trust harness for Claude Code — workflows from brainstorm to ship",
+  "author": { "name": "Minh Tran" },
+  "repository": "https://github.com/minhtran3124/harness-skills",
+  "keywords": ["skills", "workflow", "governance", "risk", "harness"]
+}

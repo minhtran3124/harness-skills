@@ -25,7 +25,7 @@ Do NOT write code, edit files, or scaffold anything until the research brief is 
 <PROJECT-CONFIG-GATE>
 Before classifying any prompt, read `PROJECT.md` (sibling of this file) for project-specific signal mappings: high-blast files, dependency manifests, shared contracts, session primitives, auth surfaces, knowledge bases, and entry-point patterns.
 
-If `PROJECT.md` is **missing**, **incomplete** (required sections empty), or **stale** (references non-existent files): **halt and instruct the user** to bootstrap one via `/bootstrap-xia2` (auto-scan helper) or by copying `PROJECT.template.md`. Do **not** proceed with classification using guessed mappings — the Decision Procedure depends on these.
+If `PROJECT.md` is **missing**, **incomplete** (required sections empty), or **stale** (references non-existent files): **halt and instruct the user** to bootstrap one via `/harness:bootstrap-xia2` (auto-scan helper) or by copying `PROJECT.template.md`. Do **not** proceed with classification using guessed mappings — the Decision Procedure depends on these.
 </PROJECT-CONFIG-GATE>
 
 ---
@@ -83,7 +83,7 @@ Read `PROJECT.md` (sibling of this `SKILL.md`). Verify required sections are pre
 
 Optional but recommended sections: `Auth Surfaces`, `Knowledge Bases`, `Recent Decisions Folder`.
 
-If any required section is missing or empty, **halt** and instruct the user to run `/bootstrap-xia2` (auto-scan helper) or copy `PROJECT.template.md` and fill in the gaps. Do not proceed with guessed mappings.
+If any required section is missing or empty, **halt** and instruct the user to run `/harness:bootstrap-xia2` (auto-scan helper) or copy `PROJECT.template.md` and fill in the gaps. Do not proceed with guessed mappings.
 
 **Sub-step 2b — Read project contract docs**
 
@@ -235,6 +235,6 @@ Do NOT write code or edit any file other than `research-brief.md`.
 
 - `PROJECT.md` — per-project signal mappings (required).
 - `PROJECT.template.md` — blank template for new projects.
-- `/bootstrap-xia2` — auto-scan helper that bootstraps `PROJECT.md` from a repo scan.
+- `/harness:bootstrap-xia2` — auto-scan helper that bootstraps `PROJECT.md` from a repo scan.
 - `tests/structural/` — Decision Procedure regression tests against current `PROJECT.md`.
 - `tests/behavioural/` — pressure scenarios validating HARD-GATE adherence.

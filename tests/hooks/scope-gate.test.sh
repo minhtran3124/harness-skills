@@ -8,7 +8,7 @@ H=scope-gate.sh
 t "implementation intent, >6 words, no plan → injects guidance"
 repo=$(new_repo $H)
 run_hook "$repo" $H "$(json_prompt 'please add a new endpoint to handle user signup today')"
-assert_rc_contains 0 "Run /feature-intake"
+assert_rc_contains 0 "Run /harness:feature-intake"
 
 t "prompt referencing a plan path → silent"
 repo=$(new_repo $H)

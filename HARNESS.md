@@ -40,18 +40,18 @@ stops to ask. Risk ≠ interruption.
 ## 4. How a change flows
 
 ```
-request → /feature-intake → Lane + Confidence → route → build → hooks corroborate → ship
+request → /harness:feature-intake → Lane + Confidence → route → build → hooks corroborate → ship
 ```
 
-1. **`/feature-intake` runs first.** It classifies the request with a 10-flag risk checklist +
+1. **`/harness:feature-intake` runs first.** It classifies the request with a 10-flag risk checklist +
    hard gates, and writes `Lane:` and `confidence:` to `specs/<slug>/SUMMARY.md`.
 2. **The lane picks the path:**
 
    | Lane | Path | Plan? | Human gate |
    |---|---|---|---|
    | **tiny** | direct `Edit` | no | none (hooks are the safety net) |
-   | **normal** | `/subagent-driven-development`, two-stage review per task | yes | only if low confidence / ambiguous |
-   | **high-risk** | full chain: `/brainstorming → /xia2 → /writing-plans → build` | yes | only on ambiguity or a hard gate |
+   | **normal** | `/harness:subagent-driven-development`, two-stage review per task | yes | only if low confidence / ambiguous |
+   | **high-risk** | full chain: `/harness:brainstorming → /harness:xia2 → /harness:writing-plans → build` | yes | only on ambiguity or a hard gate |
 
 3. **Confidence decides escalation.** Low confidence (any lane), or a hard gate, → stop and ask
    (recorded in `specs/<slug>/ESCALATIONS.md`, deny-on-no-response).

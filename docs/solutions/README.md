@@ -2,8 +2,8 @@
 
 Persistent documentation of non-obvious patterns, bug fixes, and architectural decisions.
 
-- **Written by:** `/compound` after sessions with non-trivial learnings
-- **Read by:** `/brainstorming` (decision track only) and `/xia2` (all tracks via INDEX-first lookup)
+- **Written by:** `/harness:compound` after sessions with non-trivial learnings
+- **Read by:** `/harness:brainstorming` (decision track only) and `/harness:xia2` (all tracks via INDEX-first lookup)
 
 ## Structure
 

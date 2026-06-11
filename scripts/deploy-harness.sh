@@ -1,10 +1,14 @@
 #!/bin/bash
-# Clone the Claude Code setup from the repo root (the source) into .claude/, which is where
-# Claude Code actually loads project skills, agents, and hooks. The root dirs stay the source
-# of truth; .claude/ is a derived copy (gitignored).
+# Deploy the harness governance layer from the repo root (the source) into .claude/, which is
+# where Claude Code actually loads project hooks, rules, and settings. The root dirs stay the
+# source of truth; .claude/ is a derived copy (gitignored).
+#
+# Skills and agents are NO LONGER deployed here — they ship via the plugin
+# (/plugin install harness). This script deploys the governance layer
+# (hooks/rules/templates/settings.json) and is also the repo-local dev path.
 #
 # Idempotent — supports both a FIRST-TIME install and a RE-SYNC (update). Re-run after editing
-# anything under skills/ agents/ hooks/ rules/ settings.json.
+# anything under hooks/ rules/ templates/ settings.json.
 #
 # Usage:  bash scripts/deploy-harness.sh [--target <dir>]
 #   --target <dir>   Build .claude/ inside <dir> instead of next to the sources
@@ -70,7 +74,22 @@ copy_dir()        {
     cp -R "$entry" "$OUT/$1/"
   done
 }
-strip_archive()   { rm -rf "$OUT/skills/_archive"; }   # archived skills must not register as live
+# Remove previously-deployed harness-owned skills/agents — these now ship via the plugin
+# (/plugin install harness), so an older deploy may have left them in .claude/. Per-entry
+# removal (mirrors copy_dir's merge-sync rationale): foreign user-installed entries in
+# .claude/skills and .claude/agents must stay untouched — only entries THIS repo owns are
+# pruned. Folds in the old strip_archive cleanup too.
+migrate_plugin_shipped() {
+  for entry in skills/*/; do
+    [ -d "$entry" ] || continue
+    rm -rf "$OUT/skills/$(basename "$entry")"
+  done
+  for entry in agents/*; do
+    [ -e "$entry" ] || continue
+    rm -rf "$OUT/agents/$(basename "$entry")"
+  done
+  rm -rf "$OUT/skills/_archive"   # archived skills must not register as live
+}
 derive_settings() {
   # Point relative hook commands at the deployed .claude/ copies via $CLAUDE_PROJECT_DIR so they
   # resolve from any launch directory. Absolute / $-prefixed commands are left untouched.
@@ -91,22 +110,20 @@ printf "  ${MODE_EMOJI}  ${B}%s${R}\n\n" "$MODE_LABEL"
 
 # ---------- pipeline ----------
 step "Preparing ${B}.claude/${R}"            prep_dir
-for d in skills agents hooks rules templates; do
+for d in hooks rules templates; do
   [ -e "$d" ] || continue
   step "Syncing ${B}$d/${R}"                 copy_dir "$d"
 done
-step "Stripping archived skills"             strip_archive
+step "Removing plugin-shipped skills/agents ${D}(now via /plugin install harness)${R}" migrate_plugin_shipped
 step "Deriving ${B}settings.json${R} ${D}(hook paths)${R}" derive_settings
 
 # ---------- summary ----------
-SK=$(ls -d "$OUT"/skills/*/ 2>/dev/null | wc -l | tr -d ' ')
-AG=$(ls "$OUT"/agents/*.md 2>/dev/null | wc -l | tr -d ' ')
 HK=$(ls "$OUT"/hooks/*.sh 2>/dev/null | wc -l | tr -d ' ')
 RL=$(ls "$OUT"/rules/*.md 2>/dev/null | wc -l | tr -d ' ')
 
 printf "\n  ${G}${B}✓ Harness deployed${R}  ${D}(%s)${R}\n" "$MODE"
-printf "  ${D}├─${R} 🎯 skills    ${B}%s${R}\n" "$SK"
-printf "  ${D}├─${R} 🤖 agents    ${B}%s${R}\n" "$AG"
+printf "  ${D}├─${R} 🎯 skills    ${B}via plugin${R}\n"
+printf "  ${D}├─${R} 🤖 agents    ${B}via plugin${R}\n"
 printf "  ${D}├─${R} 🪝 hooks     ${B}%s${R}\n" "$HK"
 printf "  ${D}└─${R} 📜 rules     ${B}%s${R}  ${D}(+ settings.json)${R}\n" "$RL"
 [ -f "$OUT_BASE/.mcp.json" ] || printf "  ${Y}⚠ No .mcp.json at project root — the code-review-graph MCP server is not wired (see README → MCP servers).${R}\n"

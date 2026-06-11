@@ -3,7 +3,7 @@
 Thin **index** consumed by the execution sub-agents (`coding.md`, `test-runner.md`). It does
 **not** restate conventions — it points to the docs that already hold them, and carries only the
 few execution facts no other doc reliably contains. Fill it in (or regenerate via
-`/bootstrap-xia2`) per project.
+`/harness:bootstrap-xia2`) per project.
 
 > **Why an index, not a copy:** most repos already document architecture, style, and testing
 > somewhere. Re-describing that here creates a second source of truth that drifts. Point to the

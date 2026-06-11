@@ -129,7 +129,7 @@ if [ -n "$LANE_VAL" ]; then
   echo "[RISK CORROBORATION] BLOCKED (exit 2)." >&2
   echo "  Staged diff trips hard-gate categories:$BLOCKING" >&2
   echo "  But specs SUMMARY declares  Lane: $LANE_VAL  (below high-risk)." >&2
-  echo "  Re-classify via /feature-intake (set Lane: high-risk), or have a human narrow scope." >&2
+  echo "  Re-classify via /harness:feature-intake (set Lane: high-risk), or have a human narrow scope." >&2
   exit 2
 fi
 
@@ -137,11 +137,11 @@ fi
 if [ "${RISK_CORROBORATION_STRICT:-0}" = "1" ]; then
   echo "[RISK CORROBORATION] BLOCKED (strict, no Lane declared)." >&2
   echo "  Staged diff trips hard-gate categories:$BLOCKING" >&2
-  echo "  Declare a Lane in specs/<slug>/SUMMARY.md (run /feature-intake) before committing." >&2
+  echo "  Declare a Lane in specs/<slug>/SUMMARY.md (run /harness:feature-intake) before committing." >&2
   exit 2
 fi
 
 echo "[RISK CORROBORATION] WARNING — hard-gate signals with no declared Lane:$BLOCKING" >&2
-echo "  Nothing to corroborate against. If this is real change work, run /feature-intake" >&2
+echo "  Nothing to corroborate against. If this is real change work, run /harness:feature-intake" >&2
 echo "  and record a Lane in specs/<slug>/SUMMARY.md. (Set RISK_CORROBORATION_STRICT=1 to enforce.)" >&2
 exit 0

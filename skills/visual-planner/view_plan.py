@@ -33,14 +33,22 @@ from pathlib import Path
 from render_plan import render, resolve_input
 
 # Chrome binaries to try, in order, before falling back to the default browser.
-_CHROME_LINUX = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome"]
+_CHROME_LINUX = [
+    "google-chrome",
+    "google-chrome-stable",
+    "chromium",
+    "chromium-browser",
+    "chrome",
+]
 _CHROME_WIN = ["chrome"]
 
 
 def ensure_html(plan_path: Path, force: bool) -> Path:
     """Return the PLAN.html path, (re)rendering it when missing, stale, or forced."""
     html_path = plan_path.parent / "PLAN.html"
-    stale = not html_path.exists() or html_path.stat().st_mtime < plan_path.stat().st_mtime
+    stale = (
+        not html_path.exists() or html_path.stat().st_mtime < plan_path.stat().st_mtime
+    )
     if force or stale:
         html_text, warnings, _ = render(plan_path)
         html_path.write_text(html_text, encoding="utf-8")
@@ -142,7 +150,7 @@ def main(argv: list[str]) -> None:
         elif a == "--render":
             force_render = True
         elif a == "--view":
-            pass  # no-op: viewing is implied; accepted for `/visual-planner <arg> --view` passthrough
+            pass  # no-op: viewing is implied; accepted for `/harness:visual-planner <arg> --view` passthrough
         elif a == "--port":
             i += 1
             if i >= len(args):

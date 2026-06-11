@@ -4,7 +4,7 @@ This repo is a **skills framework with a risk/trust harness on top**. This file 
 plain terms, what "the harness" is, where it came from, and how it changes the way work flows.
 
 For the full skill inventory and handoff map see [`skills/README.md`](skills/README.md). For the
-research that produced this design see [`docs/harness-experimental/`](docs/harness-experimental/).
+research that produced this design see [`hoangnb24/harness-experimental`](https://github.com/hoangnb24/harness-experimental).
 
 ---
 
@@ -23,7 +23,7 @@ who needs to approve?"*
 The model is borrowed from [`hoangnb24/harness-experimental`](https://github.com/hoangnb24/harness-experimental).
 We adopted its **risk/trust *spec*** — not its files or folder layout. That repo is "all docs,
 no enforcement"; this repo already had executable skills + blocking hooks, so we grafted the
-*idea* onto our *enforcement engine*. (Full rationale: `docs/harness-experimental/evaluation/`.)
+*idea* onto our *enforcement engine*.
 
 ## 3. The one principle everything turns on
 
@@ -88,4 +88,4 @@ A hard gate discovered *mid-task* escalates regardless of the original lane.
 | Understand routing / lanes in detail | `skills/feature-intake/SKILL.md`, `rules/orchestration.md` |
 | Know what a hook enforces | `CLAUDE.md` → Hooks table |
 | See the autonomy vs. ask-the-human rules | `rules/auto-correct-scope.md` |
-| Read the research behind this design | `docs/harness-experimental/` |
+| Read the research behind this design | [hoangnb24/harness-experimental](https://github.com/hoangnb24/harness-experimental) |

@@ -23,9 +23,9 @@ One-liner that clones the harness, builds `.claude/`, and leaves your project ro
 curl -fsSL "https://raw.githubusercontent.com/minhtran3124/harness-skills/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --yes
 ```
 
-Everything the harness needs lives entirely in a gitignored `.claude/` (skills, agents, hooks, rules, templates, settings) — nothing is dropped at your project root. **To update, just re-run the one-liner** (idempotent; existing files are backed up first).
+Everything the harness needs lives entirely in a gitignored `.claude/` (skills, agents, hooks, rules, templates, settings) — the only root file is `.mcp.json`, which wires the code-review-graph MCP server (merged into your existing `.mcp.json` if you have one; Claude Code only reads this file at the project root). **To update, just re-run the one-liner** (idempotent; existing files are backed up first).
 
-Needs `git` + [jq](https://jqlang.github.io/jq/).
+Needs `git` + [jq](https://jqlang.github.io/jq/); [uv](https://docs.astral.sh/uv/) is strongly recommended — the code-review-graph MCP server launches through `uvx`, and the installer warns when it's missing.
 Flags: `--directory <path>` · `--branch <name>` · `--source <local checkout>` · `--keep-sources` · `--dry-run`.
 
 Then **restart Claude Code** so it loads the skills, agents, and hooks.
@@ -42,21 +42,21 @@ First run installs; any later run updates (idempotent). Re-run after editing any
 
 ### MCP servers
 
-This repo wires the [code-review-graph](https://pypi.org/project/code-review-graph/) MCP server in [mcp.json](mcp.json). It launches through [uv](https://docs.astral.sh/uv/)'s `uvx` runner, so there's **no manual `pip install`** — `uvx` fetches and runs it on demand.
+This repo wires the [code-review-graph](https://pypi.org/project/code-review-graph/) MCP server in [.mcp.json](.mcp.json) — and `install-harness.sh` wires the same server into a consuming project's root `.mcp.json` automatically (creating it, or merging the entry into an existing one). It launches through [uv](https://docs.astral.sh/uv/)'s `uvx` runner, so there's **no manual `pip install`** — `uvx` fetches and runs it on demand.
 You just need `uv` (which provides `uvx`):
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh   # installs uv + uvx
-uvx code-review-graph serve                        # exactly what mcp.json invokes
+uvx code-review-graph serve                        # exactly what .mcp.json invokes
 ```
 
-The graph data is written to `.code-review-graph/` (gitignored). The `context7` MCP server is configured at the Claude Code **user** level (HTTP, needs `CONTEXT7_API_KEY`) — it is *not* in this repo's `mcp.json`, so each user wires it in their own global config.
+The graph data is written to `.code-review-graph/` (gitignored). The `context7` MCP server is configured at the Claude Code **user** level (HTTP, needs `CONTEXT7_API_KEY`) — it is *not* in this repo's `.mcp.json`, so each user wires it in their own global config.
 
 ## Repository layout
 
 | Path | What it holds |
 |---|---|
-| `skills/` | The skill library — subdirs with `SKILL.md` + standalone `.md` graph skills. |
+| `skills/` | The skill library — one subdir per skill, each with a `SKILL.md`. |
 | `agents/` | Sub-agent role definitions dispatched by skills. |
 | `rules/` | Architecture & process governance read by skills/agents. |
 | `hooks/` | Bash automation wired into Claude Code lifecycle events. |
@@ -64,7 +64,7 @@ The graph data is written to `.code-review-graph/` (gitignored). The `context7` 
 | `specs/` | Per-feature work artifacts — one `<slug>/` dir per change (SUMMARY, design, PLAN, …). |
 | `templates/` | Canonical shapes copied into `specs/<slug>/` — `SUMMARY`, `TEST_MATRIX`, `ESCALATIONS`. |
 | `docs/` · `scripts/` | Reference docs and standalone helpers. |
-| `CLAUDE.md` · `settings.json` · `mcp.json` | Project instructions; hooks + env + plugins; MCP server config (`mcpServers` only). |
+| `CLAUDE.md` · `settings.json` · `.mcp.json` | Project instructions; hooks + env + plugins; MCP server config (`mcpServers` only). |
 
 ## The skill workflow
 

@@ -83,6 +83,12 @@ command -v jq  >/dev/null 2>&1 || fail "jq is required (deploy step needs it). I
 if [ -z "$SOURCE_DIR" ]; then
   command -v git >/dev/null 2>&1 || fail "git is required to clone (or pass --source <local checkout>)."
 fi
+UVX_MISSING=0
+if ! command -v uvx >/dev/null 2>&1; then
+  UVX_MISSING=1
+  printf '  %s⚠ uvx not found — the code-review-graph MCP server launches through it.%s\n' "$Y" "$R"
+  printf '  %s  Install uv:  curl -LsSf https://astral.sh/uv/install.sh | sh%s\n' "$D" "$R"
+fi
 
 # ---------- resolve source ----------
 CLEANUP=""
@@ -145,6 +151,44 @@ else
   [ "$backed" -gt 0 ] && info "Backup: ${D}${BACKUP_DIR#$TARGET_DIR/}${R} ${Y}(merge any custom settings.json yourself)${R}"
 fi
 
+# ---------- wire MCP config (.mcp.json at target root; merge, never overwrite) ----------
+# Runs BEFORE the deploy step so its .mcp.json canary passes. Claude Code reads .mcp.json at
+# the project ROOT (not inside .claude/), so it lives outside PAYLOAD: it must survive the
+# root-source prune, and an existing file may carry the project's own servers — the
+# code-review-graph entry is merged in, never replacing the file wholesale.
+MCP_SRV='{"command":"uvx","args":["code-review-graph","serve"]}'
+if [ -f "$SRC/.mcp.json" ]; then
+  s="$(jq -c '.mcpServers["code-review-graph"] // empty' "$SRC/.mcp.json" 2>/dev/null || true)"
+  [ -n "$s" ] && MCP_SRV="$s"
+fi
+MCP_DST="$TARGET_DIR/.mcp.json"
+if [ "$DRY_RUN" -eq 1 ]; then
+  if [ ! -f "$MCP_DST" ]; then
+    log "would create  .mcp.json (code-review-graph via uvx)"
+  elif ! jq -e . "$MCP_DST" >/dev/null 2>&1; then
+    log "would skip  .mcp.json (existing file is not valid JSON)"
+  elif jq -e '.mcpServers["code-review-graph"]' "$MCP_DST" >/dev/null 2>&1; then
+    log "would leave  .mcp.json unchanged (code-review-graph already wired)"
+  else
+    log "would merge  code-review-graph into existing .mcp.json"
+  fi
+elif [ ! -f "$MCP_DST" ]; then
+  printf '{"mcpServers":{"code-review-graph":%s}}' "$MCP_SRV" | jq . > "$MCP_DST"
+  ok "Wired ${B}.mcp.json${R} (code-review-graph via uvx)"
+elif ! jq -e . "$MCP_DST" >/dev/null 2>&1; then
+  printf '  %s⚠ Existing .mcp.json is not valid JSON — left untouched.%s\n' "$Y" "$R"
+  info "Add manually: ${D}\"code-review-graph\": $MCP_SRV  under  mcpServers${R}"
+elif jq -e '.mcpServers["code-review-graph"]' "$MCP_DST" >/dev/null 2>&1; then
+  ok ".mcp.json already wires code-review-graph — left unchanged"
+else
+  mkdir -p "$BACKUP_DIR"
+  cp "$MCP_DST" "$BACKUP_DIR/.mcp.json"
+  TMP_MCP="$(mktemp)"
+  jq --argjson srv "$MCP_SRV" '.mcpServers["code-review-graph"] = $srv' "$MCP_DST" > "$TMP_MCP"
+  mv "$TMP_MCP" "$MCP_DST"
+  ok "Merged code-review-graph into existing ${B}.mcp.json${R} ${D}(backup: ${BACKUP_DIR#$TARGET_DIR/}/.mcp.json)${R}"
+fi
+
 # ---------- build .claude/ via deploy-harness ----------
 if [ "$DRY_RUN" -eq 1 ]; then
   info "Would run: bash scripts/deploy-harness.sh (builds .claude/)"
@@ -171,4 +215,8 @@ else
 fi
 
 printf '\n  %s%s✓ Harness installed%s  %s→ %s%s\n' "$G" "$B" "$R" "$D" "$TARGET_DIR" "$R"
-printf '  %s↻ Restart Claude Code in that project so it loads the harness.%s\n\n' "$Y" "$R"
+printf '  %s↻ Restart Claude Code in that project so it loads the harness.%s\n' "$Y" "$R"
+if [ "$UVX_MISSING" -eq 1 ]; then
+  printf '  %s⚠ Install uv before that restart, or the code-review-graph MCP server cannot launch.%s\n' "$Y" "$R"
+fi
+printf '\n'

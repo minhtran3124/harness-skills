@@ -14,3 +14,4 @@ diff tripped), tighten; if escalations keep resolving as "proceed unchanged", lo
 |---|---|---|---|---|---|---|---|
 | 2026-06-11 | p1-doc-truth | normal | high | none | no | shipped (`3798ab3`) | docs/config truthfulness fixes from harness audit |
 | 2026-06-11 | p2-doc-cleanup | normal | high | none | no | shipped | remaining phantom-reference cleanup + this ledger scaffold |
+| 2026-06-11 | mcp-install-wiring | normal | high | none | no | shipped | installer wires .mcp.json (merge-not-overwrite) + uvx soft-check; 6-case test suite run |

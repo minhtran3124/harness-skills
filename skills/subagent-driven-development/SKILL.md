@@ -70,7 +70,7 @@ digraph process {
     "Run /correctness-review over entire diff" [shape=box];
     "Correctness reviewer finds bugs?" [shape=diamond];
     "Implementer subagent fixes correctness bugs" [shape=box];
-    "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
+    "Use finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (./implementer-prompt.md)";
     "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
@@ -92,7 +92,7 @@ digraph process {
     "Run /correctness-review over entire diff" -> "Correctness reviewer finds bugs?";
     "Correctness reviewer finds bugs?" -> "Implementer subagent fixes correctness bugs" [label="yes"];
     "Implementer subagent fixes correctness bugs" -> "Run /correctness-review over entire diff" [label="re-review"];
-    "Correctness reviewer finds bugs?" -> "Use superpowers:finishing-a-development-branch" [label="no"];
+    "Correctness reviewer finds bugs?" -> "Use finishing-a-development-branch" [label="no"];
 }
 ```
 
@@ -368,13 +368,13 @@ Done!
 ## Integration
 
 **Required workflow skills:**
-- **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:requesting-code-review** - Code review template for reviewer subagents
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+- **using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
+- **writing-plans** - Creates the plan this skill executes
+- **superpowers:requesting-code-review** - Code review template for reviewer subagents (external)
+- **finishing-a-development-branch** - Complete development after all tasks
 
 **Subagents should use:**
-- **superpowers:test-driven-development** - Subagents follow TDD for each task
+- **superpowers:test-driven-development** - Subagents follow TDD for each task (external)
 
 **Alternative workflow:**
-- **superpowers:executing-plans** - Use for parallel session instead of same-session execution
+- **executing-plans** - Use for parallel session instead of same-session execution

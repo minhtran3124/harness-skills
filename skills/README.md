@@ -118,7 +118,7 @@ fix (implement directly or via /subagent-driven-development)
 | `/review-diff` | After implementation — visualize what changed | Markdown review with C4 diagrams |
 | `/compound` | After session with non-obvious bug fix, pattern, or architectural decision | `docs/solutions/<category>/<slug>.md` |
 | `/create-pr` | When only a PR description is needed | `PR_TEMPLATE.md` |
-| `/finishing-a-development-branch` | Implementation complete, tests pass | PR description + merge checklist |
+| `/finishing-a-development-branch` | Implementation complete, tests pass | Runs tests, pushes, opens a PR (never merges) |
 
 ---
 

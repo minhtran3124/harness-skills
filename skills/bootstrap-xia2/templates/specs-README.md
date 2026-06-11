@@ -25,7 +25,7 @@ Pick one convention per repo and stick with it. This project uses: **`<slug>/`**
 /using-git-worktrees → worktree + branch
 /subagent-driven-development | /executing-plans → implementation
 /compound → crystallize learnings into docs/solutions/
-/finishing-a-development-branch → PR + merge
+/finishing-a-development-branch → PR (never merges)
 ```
 
 See [../skills/README.md](../skills/README.md) for the full workflow map.

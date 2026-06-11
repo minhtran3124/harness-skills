@@ -1,17 +1,19 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
+description: Use when implementation is complete and tests pass — runs the targeted test suite, then pushes the branch and opens a PR against the base branch. Creates the PR only; it never merges and never discards work.
 ---
 
 # Finishing a Development Branch
 
 ## Overview
 
-Guide completion of development work by presenting clear options and handling chosen workflow.
+Complete development work by verifying tests, then opening a pull request.
 
-**Core principle:** Verify tests → Present options → Execute choice → Clean up.
+**Core principle:** Verify tests → Push → Open PR → Report URL.
 
-**Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
+This skill **only creates a PR**. It never merges, never force-pushes, and never discards work — a human reviews and merges the PR.
+
+**Announce at start:** "I'm using the finishing-a-development-branch skill to open a PR for this work."
 
 ## The Process
 
@@ -68,60 +70,25 @@ Do NOT skip this step. Never push code with failing tests.
 git merge-base HEAD main 2>/dev/null
 ```
 
-Or ask: "This branch split from main - is that correct?"
+If the base branch is not mentioned in chat, default to `main`. Only ask ("This branch split from `main` — is that correct?") if there is a concrete signal it split from something else.
 
-### Step 3: Present Options
+### Step 3: Push and Open PR
 
-If the base branch is not mentioned in chat, auto assume it's `main`.
-
-Present exactly these 4 options:
-
-```
-Implementation complete. What would you like to do?
-
-1. Push to <current_branch>
-2. Push and create a PR against <base_branch>
-3. Keep the branch as-is (I'll handle it later)
-4. Discard this work
-
-Which option?
-```
-
-**Don't add explanation** - keep options concise.
-
-### Step 4: Execute Choice
-
-#### Option 1: Push
-
-1. **Mark the plan shipped** — run Step 5. This updates `specs/<slug>/PLAN.md` locally only (`specs/` is gitignored — nothing to stage or commit). If no plan matches, skip silently.
+1. **Mark the plan shipped** — run Step 4. This updates `specs/<slug>/PLAN.md` locally only (`specs/` is gitignored — nothing to stage or commit). If no plan matches, skip silently.
 2. Push to remote: `git push -u github <current_branch>`.
-3. Confirm: "Pushed to `<current_branch>`. Done."
+3. Invoke the **create-pr** skill to generate `PR_TEMPLATE.md`.
+4. Create the PR with `gh pr create` against `<base_branch>`, using the generated template content for the body.
+5. Return the PR URL to the user. **Stop here** — do not merge.
 
-#### Option 2: Push and create PR
+If a PR already exists for this branch, push the new commits and report the existing PR URL instead of creating a duplicate.
 
-1. Execute Option 1 (push).
-2. Invoke the **create-pr** skill to generate `PR_TEMPLATE.md`.
-3. Create the PR using `gh pr create` against `<base_branch>`, using the generated template content for the body.
-4. Return the PR URL to the user.
+### Step 4: Mark the plan shipped
 
-#### Option 3: Keep as-is
+Runs as the first action of Step 3, before the push.
 
-1. Confirm: "Branch left as-is. You can resume later."
-2. Do nothing else.
+> Why this step exists: `status:` in `specs/<slug>/PLAN.md` records the plan lifecycle (`proposed` → `active` at execution start → `shipped` here). This is the **`shipped`** transition — a **local-only** signal (since `specs/` is gitignored) that you/anyone resuming the worktree can read to know the feature reached a PR. The edit auto-re-renders `PLAN.html` via `render-plan-on-write.sh`. Leaving it stale is the root cause of status drift across `specs/`.
 
-#### Option 4: Discard work
-
-1. **Ask for explicit confirmation**: "This will discard all uncommitted changes. Are you sure? (yes/no)"
-2. Only on "yes": `git checkout -- . && git clean -fd`
-3. Confirm: "Changes discarded."
-
-### Step 5: Mark the plan shipped (Options 1 & 2 only)
-
-Runs as the first action of Option 1 (and therefore Option 2, which executes Option 1). **Skip for Option 3** (keep as-is) and **Option 4** (discard) — that work is not shipped.
-
-> Why this step exists: `status:` in `specs/<slug>/PLAN.md` records the plan lifecycle (`proposed` → `active` at execution start → `shipped` here). This is the **`shipped`** transition — a **local-only** signal (since `specs/` is gitignored) that you/anyone resuming the worktree can read to know the feature landed. The edit auto-re-renders `PLAN.html` via `render-plan-on-write.sh`. Leaving it stale on ship is the root cause of status drift across `specs/`.
-
-#### 5a. Resolve the plan for this branch
+#### 4a. Resolve the plan for this branch
 
 ```bash
 branch=$(git branch --show-current)
@@ -131,9 +98,9 @@ ls specs/"$slug"/PLAN.md 2>/dev/null || ls specs/*/PLAN.md
 
 - Exact match → use `specs/<slug>/PLAN.md`.
 - No exact match → pick the `specs/*/PLAN.md` whose frontmatter `slug:` or title best matches the branch. If ambiguous, ask the user which plan this branch implements.
-- No plan at all → **skip Step 5** (don't block the push).
+- No plan at all → **skip Step 4** (don't block the push).
 
-#### 5b. Set status + append log
+#### 4b. Set status + append log
 
 In the resolved `PLAN.md`:
 
@@ -141,7 +108,7 @@ In the resolved `PLAN.md`:
 2. Append one entry to the `## Status Log` (or numbered `## N. Status Log`) section, using today's date:
 
    ```markdown
-   - YYYY-MM-DD — shipped via `<branch>` (PR #NNN for Option 2)
+   - YYYY-MM-DD — shipped via `<branch>` (PR #NNN)
    ```
 
 This edit stays local — `specs/` is gitignored, so the status update is not pushed and does not land in the PR. It only persists in whatever worktree/clone holds the plan.
@@ -152,26 +119,25 @@ This edit stays local — `specs/` is gitignored, so the status update is not pu
 |------|--------|----------|
 | 1 | Run tests | Yes — must pass to proceed |
 | 2 | Detect base branch | No — default to `main` |
-| 3 | Present 4 options | Yes — wait for user choice |
-| 4 | Execute chosen option (no auto-commit) | No |
-| 5 | Mark plan `shipped` + log (Options 1 & 2 only) | No — skip if no plan matches |
+| 3 | Push + open PR (no merge) | No |
+| 4 | Mark plan `shipped` + log | No — skip if no plan matches |
 
 ## Red Flags
 
 **Never:**
 - Push code with failing tests
+- **Merge the PR** — this skill only opens it; a human merges
 - Force-push (`--force`) without explicit user request
 - Use `git add -A` or `git add .` (may include secrets or junk files)
-- Skip the confirmation prompt on Option 4 (discard)
+- Discard or `git clean` work — this skill never deletes work
 - Amend an existing commit — always create a new one
 
 **Always:**
-- Run tests before presenting options
+- Run tests before pushing
 - Stage files by name, not by wildcard
-- Ask for confirmation before any destructive action
 - Show the PR URL after creation
 - Default to `main` as base branch when not specified
-- Set the matching plan's `status: shipped` locally (Options 1 & 2), using only canonical status values (`specs/` is gitignored; this is a local record, not a commit)
+- Set the matching plan's `status: shipped` locally, using only canonical status values (`specs/` is gitignored; this is a local record, not a commit)
 
 ## Integration
 

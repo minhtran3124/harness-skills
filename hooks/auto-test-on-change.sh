@@ -34,7 +34,7 @@ fi
 
 # Run pytest on the specific test file — lightweight flags, no coverage
 echo "[AUTO-TEST] Running: $BASENAME" >&2
-OUTPUT=$(cd "$API_DIR" && python -m pytest "$FILE_PATH" -x -q --tb=short --no-header --no-cov -p no:cacheprovider 2>&1) || true
+OUTPUT=$(cd "$API_DIR" && python -m pytest "$FILE_PATH" -x -q --tb=short --no-header --no-cov -p no:cacheprovider 2>&1)
 RESULT=$?
 
 # Show compact output (last 15 lines to capture summary + any failures)

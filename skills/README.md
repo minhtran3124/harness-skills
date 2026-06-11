@@ -2,7 +2,7 @@
 
 Skills are reusable prompt programs invoked with `/skill-name`. Each skill has a defined scope, hard gates, and a handoff to the next skill.
 
-This file is the single source of truth. Per-skill `README.md` files have been removed — consult the `SKILL.md` of each skill for runtime behavior, and this file for overview, workflow, and cross-skill concerns.
+This file is the single source of truth for overview, workflow, and cross-skill concerns — consult the `SKILL.md` of each skill for runtime behavior. Two skills keep deeper standalone docs: `skills/compound/README.md` and `skills/xia2/README.md`; the other per-skill `README.md` files have been removed (their rationale notes live at the bottom of this file).
 
 ---
 
@@ -119,10 +119,6 @@ fix (implement directly or via /subagent-driven-development)
 | `/compound` | After session with non-obvious bug fix, pattern, or architectural decision | `docs/solutions/<category>/<slug>.md` |
 | `/create-pr` | When only a PR description is needed | `PR_TEMPLATE.md` |
 | `/finishing-a-development-branch` | Implementation complete, tests pass | PR description + merge checklist |
-
-### Archived
-
-- `_archive/xia/` — predecessor of `/xia2`. Kept as reference-only; not invocable as an active skill.
 
 ---
 

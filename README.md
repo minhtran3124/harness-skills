@@ -56,7 +56,7 @@ The graph data is written to `.code-review-graph/` (gitignored). The `context7` 
 
 | Path | What it holds |
 |---|---|
-| `skills/` | The skill library — subdirs with `SKILL.md` + standalone `.md` graph skills. |
+| `skills/` | The skill library — one subdir per skill, each with a `SKILL.md`. |
 | `agents/` | Sub-agent role definitions dispatched by skills. |
 | `rules/` | Architecture & process governance read by skills/agents. |
 | `hooks/` | Bash automation wired into Claude Code lifecycle events. |

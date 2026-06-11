@@ -169,4 +169,5 @@ After routing, hand off. The downstream skills already enforce their own gates a
 - `.claude/rules/orchestration.md` — the orchestrator loop + escalation-decision step.
 - `.claude/rules/auto-correct-scope.md` — Rule 4 hard gates (the autonomy boundary).
 - `.claude/hooks/risk-corroboration.sh` — mechanical corroboration of the declared lane.
-- `docs/harness-experimental/` — the research + roadmap this skill implements.
+- `docs/harness-experimental/trust-metrics.md` — the per-task trust ledger this skill appends to.
+- [hoangnb24/harness-experimental](https://github.com/hoangnb24/harness-experimental) — the upstream research this skill implements.

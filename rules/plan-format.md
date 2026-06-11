@@ -122,4 +122,4 @@ created: YYYY-MM-DD
 ## 6. Status Log
 ```
 
-See `specs/workflow-upgrade/PLAN.md` for a full dogfooded example.
+The FastAPI examples above show the full task shape; `specs/` is local-only (gitignored), so plans are not browsable across machines.

@@ -29,8 +29,9 @@ docs/memory/
 # Added by code-review-graph
 .code-review-graph/
 
-# Specifications — fully local-only (PLAN.md, PLAN.html, design.md, research-brief.md, sidecars)
-specs/
+# Specifications — tracked, EXCEPT derived artifacts rebuildable from PLAN.md via render_plan.py
+specs/**/PLAN.html
+specs/**/.plan-review.json
 
 .vercel
 

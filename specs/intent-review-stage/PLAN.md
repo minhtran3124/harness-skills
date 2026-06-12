@@ -203,3 +203,11 @@ theo intent. Gap này được chẩn trong phiên 2026-06-11 (xem `### Intent` 
 - 2026-06-11 — Plan created (intake: Lane high-risk — hard gate templates/ + workflow redefine,
   Confidence high — giải pháp do người dùng chỉ định đích danh; brainstorming skip: không có
   design fork, phương án đã chốt trong hội thoại).
+- 2026-06-12 — Executed via /executing-plans (status → active). All 3 waves green.
+  - Wave 1: `2ddbcc2` (1.1 skill), `40d9799` (1.2 capture intent).
+  - Wave 2: `1f3cf20` (2.1 wire subagent-driven-development), `ca7a90a` (2.2 inventory/chain).
+  - Wave 3: `a2a4349` (3.1 dogfood + evidence). Dogfood caught a real `gap` (specs/ untracked)
+    → fixed by committing the plan; 2 advisory drift/excess findings recorded (oracle staleness).
+  - Verify: 5 SUMMARY rows re-run clean via `verify_summary.py --check`; `ci-strict-gate.sh`
+    OK (intent-review-stage verified); `run-tests.sh` green except known pre-deploy settings-wiring
+    red (session-knowledge.sh not yet in local `.claude/` — CI is the gate).

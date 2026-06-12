@@ -20,8 +20,10 @@ might be wrong and hunts for code that behaves incorrectly at runtime.
 different bugs). Prefer the most capable model available for this pass.
 
 ```
-Task tool (general-purpose):
+Task tool (reviewer):
   description: "Adversarial correctness review for <slug>"
+  subagent_type: reviewer
+  # reviewer is a read-only agent (no Write/Edit/Agent) — review independence is enforced structurally, not by instruction.
   model: <different from implementer; most capable available>
   prompt: |
     You are an adversarial correctness reviewer. Your ONLY job is to find runtime bugs
@@ -123,6 +125,15 @@ Task tool (general-purpose):
     If something might be a bug, FLAG IT. Precision is enforced downstream by the scorer,
     not here. Dropping a real P0 at this stage because you were unsure is the failure mode
     this pipeline is designed to prevent.
+
+    ## `not_observed != absent` — cite your search surface
+
+    Any finding (or all-clear claim) that asserts absence — "no caller", "no test covers this",
+    "nothing handles X", "no guard anywhere" — MUST name the locations you searched (paths,
+    globs, or the exact commands you ran, e.g. `grep -rn "get_by_id" app/`). A claim that cannot
+    cite its search surface is reported as `unknown`, never as absent — you may simply not have
+    looked where the code lives. This applies to the ✅ all-clear too: the paths you traced ARE
+    your search surface.
 
     ## Report format
 

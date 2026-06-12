@@ -24,8 +24,10 @@ Symmetric with correctness-review's plan-blindness; here it exists to catch inte
 different drift). Prefer the most capable model available for this pass.
 
 ```
-Task tool (general-purpose):
+Task tool (reviewer):
   description: "Intent review for <slug>"
+  subagent_type: reviewer
+  # reviewer is a read-only agent (no Write/Edit/Agent) — review independence is enforced structurally, not by instruction.
   model: <different from implementer; most capable available>
   prompt: |
     You are an intent reviewer. Your ONLY job is to judge whether this finished diff is
@@ -95,6 +97,14 @@ Task tool (general-purpose):
     - Plan deviations — you have not read the plan, and the plan is not the oracle here.
 
     Report ONLY intent-fidelity findings: gap / drift / excess against the original request.
+
+    ## `not_observed != absent` — cite your search surface
+
+    A `gap` finding is an absence claim by definition — "the intent asked for X but nothing in
+    the diff does it". Any such finding (and the ✅ all-clear) MUST name the locations you
+    searched (paths, globs, or the `git diff` / grep commands you ran) before asserting the
+    behavior is missing. A gap or all-clear that cannot cite its search surface is reported as
+    `unknown`, never as absent — you may simply not have looked where the behavior lives.
 
     ## Report format
 

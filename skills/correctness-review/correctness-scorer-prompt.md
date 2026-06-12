@@ -18,8 +18,10 @@ A lightweight model (e.g. claude-haiku or equivalent cheap/fast tier) reduces co
 sacrificing filter accuracy at this stage.
 
 ```
-Task tool (general-purpose):
+Task tool (reviewer):
   description: "Correctness score for finding: <short claim>"
+  subagent_type: reviewer
+  # reviewer is a read-only agent (no Write/Edit/Agent) — review independence is enforced structurally, not by instruction.
   model: <cheap/fast model — e.g. claude-haiku or equivalent lightweight tier>
   prompt: |
     You are a correctness scorer. You receive ONE candidate bug finding and the changed

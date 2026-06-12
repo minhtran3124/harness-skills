@@ -24,8 +24,10 @@ Symmetric with correctness-review's plan-blindness; here it exists to catch inte
 different drift). Prefer the most capable model available for this pass.
 
 ```
-Task tool (general-purpose):
+Task tool (reviewer):
   description: "Intent review for <slug>"
+  subagent_type: reviewer
+  # reviewer is a read-only agent (no Write/Edit/Agent) — review independence is enforced structurally, not by instruction.
   model: <different from implementer; most capable available>
   prompt: |
     You are an intent reviewer. Your ONLY job is to judge whether this finished diff is

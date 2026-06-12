@@ -140,6 +140,34 @@ If one of these isn't available in your environment, the workflows degrade grace
 
 ---
 
+## Integration Evidence Tiers
+
+Every integration this repo *claims* to use — external skills, MCP servers, and the cross-skill
+handoff edges — carries an honest evidence tier. The tiers:
+
+- **ci-proven** — a CI job in this repo actually runs the integration.
+- **manually-verified (date)** — a recorded run exists in this repo (commit / results file).
+- **documented-only** — referenced in docs/workflows but never observed running here.
+
+| Integration | Kind | Tier | Evidence |
+|---|---|---|---|
+| `/systematic-debugging` | external skill | documented-only | referenced in Bug Fix Path; no recorded run in this repo |
+| `/test-driven-development` | external skill | documented-only | named as implementer protocol; no recorded run here |
+| `/requesting-code-review` | external skill | documented-only | referenced template; no recorded run here |
+| `/session-tracker` | external skill | documented-only | referenced for resumption; no recorded run here |
+| `/skill-creator` | external skill | documented-only | referenced for authoring; no recorded run here |
+| `code-review-graph` | MCP server (`.mcp.json`) | documented-only | mandated by CLAUDE.md; no recorded review run pinned in-repo |
+| `context7` | MCP server (user-level) | documented-only | user-level docs lookup; no recorded run pinned in-repo |
+| `/subagent-driven-development` → `/correctness-review` → `/intent-review` | handoff edge | manually-verified (2026-06-12) | intent-review dogfood on its own diff — commit `a2a4349` |
+
+**Graduation rule** (from the research report): an edge only moves **up** a tier when a
+recorded run exists *in this repo* — support claims are never inherited from upstream or from
+another project (`not_observed != absent`). Most external-skill rows start at documented-only
+and that is the honest state; promote a row only when you can cite the commit or results file
+that proves the run.
+
+---
+
 ## Skill Handoff Map
 
 ```
